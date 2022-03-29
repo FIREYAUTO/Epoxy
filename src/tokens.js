@@ -7,7 +7,7 @@ class InternalToken {
 		this.Name=Name,this.Literal=Literal,this.Type=Type;
 		for(let Name in Extra)
 			this[Name]=Extra[Name];
-		this.Extras=Object.keys(Extras);
+		this.Extras=Object.keys(Extra);
 	}
 	equals(Token){
 		return Token.Name===this.Name&&Token.Type===this.Type;	
