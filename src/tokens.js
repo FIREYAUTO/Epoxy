@@ -10,7 +10,13 @@ class InternalToken {
 		}
 	}
 	equals(Token){
-		return Token.Name==this.Name&&Token.Type==this.Type;	
+		return Token.Name===this.Name&&Token.Type===this.Type;	
+	}
+	isType(Type){
+		return this.Type===Type;	
+	}
+	rEquals(Name,Type){
+		return Name===this.Name&&Type===this.Type;
 	}
 }
 
