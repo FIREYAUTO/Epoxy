@@ -115,6 +115,8 @@ const RawTokens = [
 	new InternalToken("FALSE","false",Types[8]),
 	//Null Tokens
 	new InternalToken("NULL","null",Types[9]),
+	//Control Tokens
+	new InternalToken("BACKSLASH","\\","Control"),
 ];
 
 const Tokens = {
