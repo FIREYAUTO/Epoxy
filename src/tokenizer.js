@@ -244,4 +244,4 @@ const Tokenizer = {
           Exports
 \*************************/
 
-export {Tokenizer,TokenzierStack};
+export {Tokenizer,TokenizerStack};
