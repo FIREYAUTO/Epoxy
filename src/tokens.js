@@ -5,9 +5,9 @@
 class InternalToken {
 	constructor(Name,Literal,Type,Extra={}){
 		this.Name=Name,this.Literal=Literal,this.Type=Type;
-		for(let Name in Extra){
-			this[Name]=Extra[Name];	
-		}
+		for(let Name in Extra)
+			this[Name]=Extra[Name];
+		this.Extras=Object.keys(Extras);
 	}
 	equals(Token){
 		return Token.Name===this.Name&&Token.Type===this.Type;	
@@ -15,7 +15,7 @@ class InternalToken {
 	isType(Type){
 		return this.Type===Type;	
 	}
-	rEquals(Name,Type){
+	is(Name,Type){
 		return Name===this.Name&&Type===this.Type;
 	}
 }
@@ -129,6 +129,13 @@ const Tokens = {
 		for(let Name in _T){
 			let T = _T[Name];
 			if(Literal===T.Literal&&Type===T.Type)return T;
+		}
+	},
+	GetFromRawLiteral:function(Literal){
+		let _T=this.__Tokens;
+		for(let Name in _T){
+			let T = _T[Name];
+			if(Literal===T.Literal)return T;
 		}
 	},
 	GetTypeFromName:function(Name){
