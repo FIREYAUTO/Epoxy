@@ -143,7 +143,7 @@ class TokenizerStack {
 	ParseNumber(Stack,Token){
 		let Success,Result = this.ParseENumber(Stack,Token.Literal);
 		return [Success,Result];
-	},
+	}
 	ToNumber(Token,Value){
 		Token.Type="Constant",
 			Token.Name="Number",
@@ -194,7 +194,7 @@ class TokenizerStack {
 			if(!(Result===undefined))Token.Type="Constant",Token.Name="String",Token.Literal=Result;
 		}
 		return Token;
-	},
+	}
 	GetBetween(Stack,EndCheck,AllowEscapes){
 		let Result = [];
 		while(!Stack.IsEnd()){
