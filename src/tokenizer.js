@@ -113,34 +113,53 @@ class TokenizerStack {
 		return Result;
 	}
 	//Token Type Handling
-	ParseNumber(Stack,Token){
-		let Value = Token.Literal;
-		if(isNaN(+Value))return [false];
+	ParseENumber(Stack,Value,AllowDecimal=true){
+		if(Value.toLowerCase().endsWith("e")){
+			Value=Value.substr(0,Value.length-1);
+			if(isNaN(+Value))return[false];
+			let ESuffix = Stack.Next();
+			if(ESuffix.is("ADD","Operator")||ESuffix.is("SUB","Operator"))
+				Value+="e"+ESuffix.Literal,
+					ESuffix=Stack.Next();
+			if(isNaN(+ESuffix.Literal))return[false];
+			Value+=ESuffix.Literal;
+			return [true,Value];
+		}else if(this.AllowDecimal){
+			return this.ParseDecimal(Stack,Value);	
+		}
+		return [false];
+	}
+	ParseDecimal(Stack,Value){
 		let Next = Stack.Next();
 		if(Next.is("DOT","Operator")){
 			let Number = Stack.Next();
-			if(isNaN(+Number.Literal)){Stack.Next(-2);return [false]}
-			Value+="."+Number.Literal;
-		}else{
-			Stack.Next(-1);
+			let Success,Result = this.ParseENumber(Stack,Number.Literal,false)
+			if(!Success)return[Success,Result];
+			Value+="."+Result;
 		}
-		let ENext = Stack.Next();
-		if(ENext.is("E","Identifier")||ENext.is("e","Identifier")){
-			let ESuffix = Stack.Next(),
-			    Amount = 2;
-			if(ESuffix.is("ADD","Operator")||ESuffix.is("SUB","Operator"))
-				Value+=ENext.Literal+ESuffix.Literal,
-					ESuffix=Stack.Next(),
-					Amount++;
-			if(isNaN(+ESuffix.Literal)){Stack.Next(-Amount);return [false]}
-			Value+=ESuffix.Literal;
-		}
-		return [true,+Value];
+		if(isNaN(+Value))return[false];
+		return [true,Value];
+	}
+	ParseNumber(Stack,Token){
+		let Success,Result = this.ParseENumber(Stack,Token.Literal);
+		return [Success,Result];
 	},
 	ToNumber(Token,Value){
 		Token.Type="Constant",
 			Token.Name="Number",
 			Token.Literal=Value;
+	}
+	EscapeStringLiteral(Literal){
+		switch (Literal) {
+			case "r": return "\r";
+			case "n": return "\n";
+			case "b": return "\b";
+			case "t": return "\t";
+			case "c": return "\c";
+			case "f": return "\f";
+			case "v": return "\v";
+			default: return Literal;
+		}	
 	}
 	CombineStringLiterals(Literals){
 		let Result = "";
@@ -167,7 +186,7 @@ class TokenizerStack {
 				Token.Name = "Null";
 		}else if(Token.isType("Identifier")){
 			let [Success,Result] = this.ParseNumber(Stack,Token);
-			if(Success)this.ToNumber(Token,Result);
+			if(Success)this.ToNumber(Token,+Result);
 		}else if(Token.isType("String")){
 			let Result = undefined;
 			if(Token.Name==="QUOTE")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("QUOTE",Token.Type),true));
