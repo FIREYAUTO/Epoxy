@@ -122,8 +122,9 @@ class TokenizerStack {
 			Value=Value.substr(0,Value.length-1);
 			if(isNaN(+Value))return[false,undefined];
 			let ESuffix = Stack.Next();
+			Value+="e";
 			if(ESuffix.is("ADD","Operator")||ESuffix.is("SUB","Operator"))
-				Value+="e"+ESuffix.Literal,
+				Value+=ESuffix.Literal,
 					ESuffix=Stack.Next();
 			if(isNaN(+ESuffix.Literal))return[false,undefined];
 			Value+=ESuffix.Literal;
