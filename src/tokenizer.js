@@ -44,11 +44,14 @@ class TokenizerStack {
 			IdentifierLength = 0;
 		if(this.IsIdentifierCharacter(Character)){
 			let New = Character;
-			while(true){
+			while(!this.IsEnd()){
 				let Next = this.Next();
 				if(this.IsEnd())break;
 				let EscapeNext = this.Escape(Next);
-				if(!this.IsIdentifierCharacter(EscapeNext))break;
+				if(!this.IsIdentifierCharacter(Next)){
+                	this.Next(-1);
+                	break;
+                }
 				New+=Next;
 			}
 			IsIdentifier=true,
@@ -62,7 +65,7 @@ class TokenizerStack {
 				let Matches=0,
 					Index=0,
 					Length=Token.Literal.length;
-				while(!this.IsEnd()){
+				while(true){
 					let Value = Token.Literal.substr(Index,1);
 					if(Value===this.Tokens[this.Index+Index])Matches++;
 					else break;
@@ -79,7 +82,7 @@ class TokenizerStack {
 		if(PossibleMatches.length===0)PossibleMatches.push(Character);
 		let PossibleMatch = PossibleMatches.sort().pop();
 		if(!IsIdentifier||PossibleMatch.length!=IdentifierLength)
-			this.Next(PossibleMatch.length-IdentifierLength);
+			this.Next((PossibleMatch.length-IdentifierLength)-1);
 		return PossibleMatch;
 	}
 	ParseToken(Character){
@@ -117,32 +120,38 @@ class TokenizerStack {
 	ParseENumber(Stack,Value,AllowDecimal=true){
 		if(Value.toLowerCase().endsWith("e")){
 			Value=Value.substr(0,Value.length-1);
-			if(isNaN(+Value))return[false];
+			if(isNaN(+Value))return[false,undefined];
 			let ESuffix = Stack.Next();
 			if(ESuffix.is("ADD","Operator")||ESuffix.is("SUB","Operator"))
 				Value+="e"+ESuffix.Literal,
 					ESuffix=Stack.Next();
-			if(isNaN(+ESuffix.Literal))return[false];
+			if(isNaN(+ESuffix.Literal))return[false,undefined];
 			Value+=ESuffix.Literal;
 			return [true,Value];
-		}else if(this.AllowDecimal){
+		}else if(AllowDecimal){
 			return this.ParseDecimal(Stack,Value);	
-		}
-		return [false];
+		}else{
+        	if(!isNaN(+Value)){
+            	return [true,Value];
+            }
+        }
+		return [false,undefined];
 	}
 	ParseDecimal(Stack,Value){
 		let Next = Stack.Next();
-		if(Next.is("DOT","Operator")){
+		if(Next&&Next.is("DOT","Operator")){
 			let Number = Stack.Next();
-			let Success,Result = this.ParseENumber(Stack,Number.Literal,false)
+			let [Success,Result] = this.ParseENumber(Stack,Number.Literal,false);
 			if(!Success)return[Success,Result];
 			Value+="."+Result;
-		}
+		}else{
+        	Stack.Next(-1);
+        }
 		if(isNaN(+Value))return[false];
 		return [true,Value];
 	}
 	ParseNumber(Stack,Token){
-		let Success,Result = this.ParseENumber(Stack,Token.Literal);
+		let [Success,Result] = this.ParseENumber(Stack,Token.Literal);
 		return [Success,Result];
 	}
 	ToNumber(Token,Value){
@@ -201,13 +210,13 @@ class TokenizerStack {
 		while(!Stack.IsEnd()){
 			let Token = Stack.Next();
 			if(AllowEscapes&&Token.is("BACKSLASH","Control")){
-				Token=this.Next();
+				Token=Stack.Next();
 				Token.Escaped===true;
 				Result.push(Token);
 				continue;
 			}
 			if(EndCheck(Token))break;
-			Result.push(Token)
+			Result.push(Token);
 		}
 		return Result;
 	}
