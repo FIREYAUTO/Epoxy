@@ -199,7 +199,7 @@ class TokenizerStack {
 		let Result = [];
 		while(!Stack.IsEnd()){
 			let Token = Stack.Next();
-			if(AllowEscapes&&Token.is("Backslash","Control")){
+			if(AllowEscapes&&Token.is("BACKSLASH","Control")){
 				Token=this.Next();
 				Token.Escaped===true;
 				Result.push(Token);
