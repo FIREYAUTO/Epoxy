@@ -44,9 +44,10 @@ class TokenizerStack {
 			IdentifierLength = 0;
 		if(this.IsIdentifierCharacter(Character)){
 			let New = Character;
-			while(!this.IsEnd()){
-				let Next = this.Next(),
-					EscapeNext = this.Escape(Next);
+			while(true){
+				let Next = this.Next();
+				if(this.IsEnd())break;
+				let EscapeNext = this.Escape(Next);
 				if(!this.IsIdentifierCharacter(EscapeNext))break;
 				New+=Next;
 			}
