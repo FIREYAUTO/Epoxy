@@ -2,7 +2,7 @@
           Imports
 \*************************/
 
-import {Tokens as EPXTokens, TokenTypes as EPXTokenTypes, InternalToken, BaseToken} from "/src/tokens.js";
+import {Tokens as EPXTokens, TokenTypes as EPXTokenTypes, InternalToken, BaseToken} from "https://fireyauto.github.io/Epoxy/src/tokens.js";
 
 /*************************\
       Tokenizer Stack
