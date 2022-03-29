@@ -142,6 +142,20 @@ class TokenizerStack {
 			Token.Name="Number",
 			Token.Literal=Value;
 	}
+	CombineStringLiterals(Literals){
+		let Result = "";
+		for(let T of Literals){
+			let L=T.Literal,
+				Add=undefined;
+			if(T.Escaped){
+				if(L.length>1)Add=L.substr(1,L.length),L=L.substr(0,1);
+				L=this.EscapeStringLiteral(L);
+			}
+			Result+=L;
+			if(Add)Result+=Add;
+		}
+		return Result;
+	}
 	ParseTokenType(Stack,Token){
 		if(Token.isType("Boolean")){
 			Token.Type = "Constant",
@@ -154,9 +168,29 @@ class TokenizerStack {
 		}else if(Token.isType("Identifier")){
 			let [Success,Result] = this.ParseNumber(Stack,Token);
 			if(Success)this.ToNumber(Token,Result);
+		}else if(Token.isType("String")){
+			let Result = undefined;
+			if(Token.Name==="QUOTE")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("QUOTE",Token.Type),true));
+			else if(Token.Name==="APOS")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("APOS",Token.Type),true));
+			if(!(Result===undefined))Token.Type="Constant",Token.Name="String",Token.Literal=Result;
 		}
 		return Token;
 	},
+	GetBetween(Stack,EndCheck,AllowEscapes){
+		let Result = [];
+		while(!Stack.IsEnd()){
+			let Token = Stack.Next();
+			if(AllowEscapes&&Token.is("Backslash","Control")){
+				Token=this.Next();
+				Token.Escaped===true;
+				Result.push(Token);
+				continue;
+			}
+			if(EndCheck(Token))break;
+			Result.push(Token)
+		}
+		return Result;
+	}
 	HandleTokenTypes(Tokens){
 		let Stack={
 			Index:0,
