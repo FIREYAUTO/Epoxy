@@ -86,7 +86,7 @@ const ComplexExpressions = [
 		Name:"ADD",
 		Type:"Operator",
 		Stop:false,
-		Priority:300,
+		Priority:320,
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Add");
@@ -99,7 +99,7 @@ const ComplexExpressions = [
 		Name:"MUL",
 		Type:"Operator",
 		Stop:false,
-		Priority:300,
+		Priority:360,
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Mul");
@@ -112,7 +112,7 @@ const ComplexExpressions = [
 		Name:"DIV",
 		Type:"Operator",
 		Stop:false,
-		Priority:300,
+		Priority:340,
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("DIV");
@@ -125,7 +125,7 @@ const ComplexExpressions = [
 		Name:"MOD",
 		Type:"Operator",
 		Stop:false,
-		Priority:300,
+		Priority:340,
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Mod");
@@ -138,7 +138,7 @@ const ComplexExpressions = [
 		Name:"POW",
 		Type:"Operator",
 		Stop:false,
-		Priority:300,
+		Priority:380,
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Pow");
