@@ -159,15 +159,25 @@ class ASTStack {
 		}
 		return Expression.Value;
 	}
-	ParseExpression(Priority=-1,AllowList,Type){
+	ParseExpression(Priority=-1,AllowList,Type,EAllowList=[],EType="expression"){
 		this.ErrorIfEOS();
 		let Token=this.Token,
 			Result=undefined;
+		let Allowed=EAllowList.length>0;
 		for(let Expression of ASTExpressions){
-			let Do=false;
-			if(Expression.Name)Do=Token.is(Expression.Name,Expression.Type);
-			else Do=Token.isType(Expression.Type);
+			let Do=false,TY="Value";
+			if(Expression.Name)Do=Token.is(Expression.Name,Expression.Type),TY="Value";
+			else Do=Token.isType(Expression.Type),TY="Type";
 			if(Do){
+				if(Allowed){
+					let Passed=false;
+					for(let Allow of EAllowList){
+						if(TY==="Value"&&Allow.length==2)Passed=Token.is(...Allow);
+						else if(TY==="Type"&&Allow.length==1) Passed=Token.isType(...Allow);
+						if(Passed)break;
+					}
+					if(!Passed)return ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseValue:true,Token:Token})} while parsing ${EType}`]);
+				}
 				let Exp = Expression.Call.bind(this)(Priority,AllowList,Type);
 				Result = Exp.Value;
 				Priority = Exp.Priority;
@@ -175,14 +185,14 @@ class ASTStack {
 				break;
 			}
 		}
-		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token;Token})} while parsing expression`]);
+		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Token})} while parsing expression`]);
 		Result = this.ParseComplexExpression(new ASTExpression(Result,Priority),AllowList,Type);
 		return Result;
 	}
-	ExpressionList(Priority,AllowList,Type,End){
+	ExpressionList(Priority,AllowList,Type,End,EAllowList,EType){
 		let List=[];
 		do {
-			List.push(this.ParseExpression(Priority,AllowList,Type));
+			List.push(this.ParseExpression(Priority,AllowList,Type,EAllowList,EType));
 			if(this.CheckNext("COMMA","Operator")){
 				this.Next(2);
 				if(End&&this.Token&&this.Token.is(End.Name,End.Type)){
@@ -195,12 +205,12 @@ class ASTStack {
 		}while(true);
 		return List;
 	}
-	ExpressionListInside(Start,End,Priority,AllowList,Type){
+	ExpressionListInside(Start,End,Priority,AllowList,Type,EAllowList,EType){
 		if(this.Token.is(Start.Name,Start.Type)){
 			this.Next();
 			this.ErrorIfEOS(" while parsing expression list");
 			if(this.Token.is(End.Name,End.Type))return[];
-			let List = this.ExpressionList(Priority,AllowList,Type,End);
+			let List = this.ExpressionList(Priority,AllowList,Type,End,EAllowList,EType);
 			if(!End.Stopped)this.TestNext(End.Name,End.Type),this.Next();
 			return List;
 		}else{
@@ -208,12 +218,12 @@ class ASTStack {
 			ErrorHandler.ASTError(this,"ExpectedGot",[this.GetFT({UseType:true,UseLiteral:true,Type:Type,Name:Name,Literal:T?T.Literal:Name}),this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})]);
 		}
 	}
-	ExpressionInside(Start,End,Priority,AllowList,Type){
+	ExpressionInside(Start,End,Priority,AllowList,Type,EAllowList,EType){
 		if(this.Token.is(Start.Name,Start.Type)){
 			this.Next();
 			this.ErrorIfEOS(" while parsing expression");
 			if(this.Token.is(End.Name,End.Type))return;
-			let Result = this.ExpressionList(Priority,AllowList,Type,End);
+			let Result = this.ExpressionList(Priority,AllowList,Type,End,EAllowList,EType);
 			this.TestNext(End.Name,End.Type);
 			this.Next();
 			return Result;
@@ -245,7 +255,7 @@ class ASTStack {
 			if(Options.AllowDefault){
 				if(this.CheckNext("COLON","Operator")){
 					this.Next(2);
-					Identifier.Value = this.ParseExpression(Options.Priority,Options.AllowList,Options.Type);
+					Identifier.Value = this.ParseExpression(Options.Priority,Options.AllowList,Options.Type,Options.EAllowList,Options.EType);
 				}
 			}
 			List.push(Identifier);
@@ -285,7 +295,7 @@ class ASTStack {
 				return;
 			}
 		}
-		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"]]);
+		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
 		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",this.GetFT({UseType:true,UseLiteral:true,Token:this.Token}));
 		this.ChunkWrite(Result);
 	}
