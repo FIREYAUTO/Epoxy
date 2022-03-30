@@ -65,9 +65,9 @@ class ASTStack {
 	//{{ Token Naming Methods }}\\
 	GetFT(Options={}){
 		if(this.IsEnd())return "end of script";
-		let Type = Options.Type||Options.Token.Type,
-			Literal = Options.Literal||Options.Token.Literal,
-			Name = Options.Name||Options.Token.Name;
+		let Type = Options.Token?Options.Type:Options.Token.Type,
+			Literal = Options.Token?Options.Literal:Options.Token.Literal,
+			Name = Options.Token?Options.Name:Options.Token.Name;
 		if(Type==="Constant")Type=Name.toLowerCase();
 		let Text=[];
 		if(Options.UseType)Text.push(Type.toLowerCase());
