@@ -125,6 +125,9 @@ class ASTStack {
 		}
 	}
 	//{{ Expressional Parsing Methods }}\\
+	ASTExpression(...Arguments){
+		return new ASTExpression(...Arguments);	
+	}
 	ParseComplexExpression(Expression,AllowList=[],Type="complex expression"){
 		if(!(Expression instanceof ASTExpression))return Expression;
 		let Priority=Expression.Priority,
