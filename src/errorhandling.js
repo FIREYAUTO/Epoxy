@@ -12,14 +12,13 @@ const ErrorTypes = {
 	"Malformed":a=>`Malformed ${a}`,
 };
 
-const EPXErrorName = "EpoxyError";
-class EPXError extends Error{constructor(Message){super(Message).name=EPXErrorName}}
+class EPXError extends Error{constructor(Name,Message){super(Message).name=Name}}
 
 const ErrorHandler = {
-	ThrowError:function(Type,Start="",Arguments=[]){
+	ThrowError:function(Type,Name="",Arguments=[]){
 		let Call = ErrorTypes[Type];
 		if(!Call)return;
-		throw new EPXError(`${Start}${Call(...Arguments)}`);
+		throw new EPXError(Name,Call(...Arguments));
 	},
 	DefaultError:function(Line,Index,Type,Arguments){
 		return this.ThrowError(Type,`[Epoxy Error {${Line}:${Index}}]: `,Arguments);
