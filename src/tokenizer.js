@@ -119,7 +119,7 @@ class TokenizerStack {
 	}
 	//Token Type Handling
 	ParseENumber(Stack,Value,AllowDecimal=true){
-		if(Value.toLowerCase().endsWith("e")){
+		if(Value.toLowerCase().endsWith("e")&&Value.toLowerCase().match(/[0-9](?=e)/)){
 			Value=Value.substr(0,Value.length-1);
 			if(isNaN(+Value))return[false,Value+"e"];
 			let ESuffix = Stack.Next();
@@ -210,7 +210,7 @@ class TokenizerStack {
 			else if(Token.Name==="APOS")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("APOS",Token.Type),true,true));
 			if(!(Result===undefined))Token.Type="Constant",Token.Name="String",Token.Literal=Result;
 		}else if(Token.is("COMMENT","Operator")){
-			this.GetBetween(Stack,T=>T.isType("Whitespace")&&T.LineBreak===true);
+			this.GetBetween(Stack,T=>T.Type==="Whitespace"&&T.LineBreak===true);
 			return;
 		}
 		return Token;
