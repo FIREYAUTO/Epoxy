@@ -4,7 +4,7 @@
  
 import {ErrorHandler} from "https://fireyauto.github.io/Epoxy/src/errorhandling.js";
 import {Tokens as _Tokens} from "https://fireyauto.github.io/Epoxy/src/tokens.js";
-import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/src/astclasses.js";
+import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/astclasses.js";
 
 /*************************\
           Chunks
