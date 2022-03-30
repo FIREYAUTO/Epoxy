@@ -295,7 +295,7 @@ class ASTStack {
 				return;
 			}
 		}
-		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
+		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"],["DOT","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
 		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",this.GetFT({UseType:true,UseLiteral:true,Token:this.Token}));
 		this.ChunkWrite(Result);
 	}
