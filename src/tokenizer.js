@@ -121,16 +121,13 @@ class TokenizerStack {
 	ParseENumber(Stack,Value,AllowDecimal=true){
 		if(Value.toLowerCase().endsWith("e")){
 			Value=Value.substr(0,Value.length-1);
-			if(isNaN(+Value))return[false,undefined];
+			if(isNaN(+Value))return[false,Value+"e"];
 			let ESuffix = Stack.Next();
 			Value+="e";
 			if(ESuffix.is("ADD","Operator")||ESuffix.is("SUB","Operator"))
 				Value+=ESuffix.Literal,
 					ESuffix=Stack.Next();
-			if(isNaN(+ESuffix.Literal)){
-				ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Value}`]);
-				return[false,Value];
-			}
+			if(isNaN(+ESuffix.Literal))return[false,Value+ESuffix.Literal];
 			Value+=ESuffix.Literal;
 			return [true,Value];
 		}else if(AllowDecimal){
@@ -147,15 +144,12 @@ class TokenizerStack {
 		if(Next&&Next.is("DOT","Operator")){
 			let Number = Stack.Next();
 			let [Success,Result] = this.ParseENumber(Stack,Number.Literal,false);
-			if(!Success){
-				ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
-				return[Success,Result];
-			}
+			if(!Success)return[Success,Value+"."+Result];
 			Value+="."+Result;
 		}else{
-        	Stack.Next(-1);
-        }
-		if(isNaN(+Value))return[false];
+        		Stack.Next(-1);
+        	}
+		if(isNaN(+Value))return[false,Value];
 		return [true,Value];
 	}
 	ParseNumber(Stack,Token){
@@ -204,7 +198,12 @@ class TokenizerStack {
 				Token.Name = "Null";
 		}else if(Token.isType("Identifier")){
 			let [Success,Result] = this.ParseNumber(Stack,Token);
-			if(Success)this.ToNumber(Token,+Result);
+			if(Success){
+				if(isNaN(+Result))return ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
+				this.ToNumber(Token,+Result);
+			}else{
+				if(Result.match(/^[0-9]/))return ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
+			}
 		}else if(Token.isType("String")){
 			let Result = undefined;
 			if(Token.Name==="QUOTE")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("QUOTE",Token.Type),true,true));
