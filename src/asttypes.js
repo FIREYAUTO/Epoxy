@@ -69,6 +69,84 @@ const Expressions = [
 \*************************/
 
 const ComplexExpressions = [
+	{
+		Name:"SUB",
+		Type:"Operator",
+		Stop:false,
+		Priority:300,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Sub");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"ADD",
+		Type:"Operator",
+		Stop:false,
+		Priority:300,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Add");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"MUL",
+		Type:"Operator",
+		Stop:false,
+		Priority:300,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Mul");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"DIV",
+		Type:"Operator",
+		Stop:false,
+		Priority:300,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("DIV");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"MOD",
+		Type:"Operator",
+		Stop:false,
+		Priority:300,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Mod");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"POW",
+		Type:"Operator",
+		Stop:false,
+		Priority:300,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Pow");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
 	/*
 	{
 		Name:"Name",
