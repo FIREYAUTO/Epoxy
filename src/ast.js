@@ -223,13 +223,29 @@ class ASTStack {
 	IdentifierList(Options){
 		let List = [];
 		do{
-			this.TypeTest(this.Token,"Identifier");
 			let Identifier = {
 				Name:undefined,
 				Value:undefined,
 				Line:this.Token.Line,
-				Index:this.Token.Index
+				Index:this.Token.Index,
+				Pointer:undefined,
 			}
+			if(Options.AllowPointer){
+				this.Test(this.Token,"POPEN","Bracket");
+				this.Next();
+				this.TypeTest(this.Token,"Identifier");
+				Identifier.Pointer = this.Token.Name;
+				this.TestNext("PCLOSE","Bracket");
+			}
+			this.TypeTest(this.Token,"Identifier");
+			Identifier.Name = this.Token.Name;
+			if(Options.AllowDefault){
+				if(this.CheckNext("COLON","Operator")){
+					this.Next(2);
+					Identifier.Value = this.ParseExpression(Options.Priority,Options.AllowList,Options.Type);
+				}
+			}
+			List.push(Identifier);
 			if(this.CheckNext("COMMA","Operator")){
 				this.Next(2);
 				continue;
