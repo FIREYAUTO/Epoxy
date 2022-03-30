@@ -90,10 +90,12 @@ class TokenizerStack {
 		Character = this.ComputePossibleCharacter(Character);
 		let RawToken = EPXTokens.GetFromRawLiteral(Character);
 		let Token = new BaseToken(Character,Character,"Identifier");
-		if(RawToken)
+		if(RawToken){
 			Token.Name = RawToken.Name,
 				Token.Literal = Character,
 				Token.Type = RawToken.Type;
+			for(let Name of RawToken.Extras)Token[Name]=RawToken[Name];
+		}
 		if(Token.Type==="Whitespace"&&Token.LineBreak){
 			this.TokenIndex=0,
 				this.TokenLine++;
