@@ -18,10 +18,10 @@ const ErrorHandler = {
 	ThrowError:function(Type,Name="",Arguments=[]){
 		let Call = ErrorTypes[Type];
 		if(!Call)return;
-		throw new EPXError(Name,Call(...Arguments));
+		throw new EPXError(Name,Call(...Arguments)+"\n");
 	},
 	DefaultError:function(Line,Index,Type,Arguments){
-		return this.ThrowError(Type,`[Epoxy Error {${Line}:${Index}}]: `,Arguments);
+		return this.ThrowError(Type,`[Epoxy Error {${Line}:${Index}}]`,Arguments);
 	},
 	TokenizerError:function(Token,Type,Arguments){
 		return this.DefaultError(Token.Line,Token.Index,Type,Arguments);	
