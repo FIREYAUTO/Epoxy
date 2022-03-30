@@ -15,6 +15,7 @@ const Chunks = [
 		Name:"VAR",
 		Type:"Keyword",
 		Call:function(){
+			this.Next();
 			let Node = this.NewNode("NewVariable");
 			Node.Write("Variables",this.IdentifierList({
 				AllowDefault:true,
