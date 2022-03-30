@@ -70,7 +70,7 @@ class ASTStack {
 			Name = Options.Token?Options.Name:Options.Token.Name;
 		if(Type==="Constant")Type=Name.toLowerCase();
 		let Text=[];
-		if(Options.UseType)Text.push(Type.toLowerCase());
+		if(Options.UseType)Text.push(String(Type).toLowerCase());
 		if(Options.UseLiteral)Text.push(Literal);
 		return Text.join(" ");
 	}
