@@ -15,13 +15,13 @@ const ErrorTypes = {
 class EPXError extends Error{constructor(Name,Message){super(Message).name=Name}}
 
 const ErrorHandler = {
-	ThrowError:function(Type,Name="",Arguments=[]){
+	ThrowError:function(Type,Name="",End="",Arguments=[]){
 		let Call = ErrorTypes[Type];
 		if(!Call)return;
-		throw new EPXError(Name,Call(...Arguments)+"\n");
+		throw new EPXError(Name,Call(...Arguments)+End);
 	},
 	DefaultError:function(Line,Index,Type,Arguments){
-		return this.ThrowError(Type,`[Epoxy Error {${Line}:${Index}}]`,Arguments);
+		return this.ThrowError(Type,"[Epoxy Error]",` on line ${Line} at index ${Index}`,Arguments);
 	},
 	TokenizerError:function(Token,Type,Arguments){
 		return this.DefaultError(Token.Line,Token.Index,Type,Arguments);	
