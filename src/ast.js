@@ -5,7 +5,7 @@
 import {Chunks as ASTChunks,Expressions as ASTExpressions,ComplexExpressions as ASTComplexExpressions} from "https://fireyauto.github.io/Epoxy/src/asttypes.js";
 import {ErrorHandler} from "https://fireyauto.github.io/Epoxy/src/errorhandling.js";
 import {Tokens as _Tokens} from "https://fireyauto.github.io/Epoxy/src/tokens.js";
-import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/src/astclasses.js";
+import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/astclasses.js";
 
 class ASTExpression {
 	constructor(Value,Priority=-1){
