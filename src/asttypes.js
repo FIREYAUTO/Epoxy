@@ -19,6 +19,7 @@ const Chunks = [
 			Node.Write("Variables",this.IdentifierList({
 				AllowDefault:true,
 				Priority:-1,
+				EType:"variable expression",
 			}));
 			return Node;
 		},
@@ -41,6 +42,13 @@ const Chunks = [
 \*************************/
 
 const Expressions = [
+	{
+		Type:"Constant",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			return this.ASTExpression(this.Token.Literal,Priority);
+		},
+	},
 	/*
 	{
 		Name:"Name",
