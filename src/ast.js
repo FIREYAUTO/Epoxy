@@ -65,12 +65,12 @@ class ASTStack {
 	//{{ Token Naming Methods }}\\
 	GetFT(Options={}){
 		if(this.IsEnd())return "end of script";
-		let Type = Options.Token?Options.Type:Options.Token.Type,
-			Literal = Options.Token?Options.Literal:Options.Token.Literal,
-			Name = Options.Token?Options.Name:Options.Token.Name;
+		let Type = Options.Token?Options.Token.Type:Options.Type,
+			Literal = Options.Token?Options.Token.Literal:Options.Literal,
+			Name = Options.Token?Options.Token.Name:Options.Name;
 		if(Type==="Constant")Type=Name.toLowerCase();
 		let Text=[];
-		if(Options.UseType)Text.push(String(Type).toLowerCase());
+		if(Options.UseType)Text.push(Type.toLowerCase());
 		if(Options.UseLiteral)Text.push(Literal);
 		return Text.join(" ");
 	}
