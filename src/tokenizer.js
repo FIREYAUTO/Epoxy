@@ -3,6 +3,7 @@
 \*************************/
 
 import {Tokens as EPXTokens, TokenTypes as EPXTokenTypes, InternalToken, BaseToken} from "https://fireyauto.github.io/Epoxy/src/tokens.js";
+import {ErrorHandler} from "https://fireyauto.github.io/Epoxy/src/errorhandling.js";
 
 /*************************\
       Tokenizer Stack
@@ -126,24 +127,30 @@ class TokenizerStack {
 			if(ESuffix.is("ADD","Operator")||ESuffix.is("SUB","Operator"))
 				Value+=ESuffix.Literal,
 					ESuffix=Stack.Next();
-			if(isNaN(+ESuffix.Literal))return[false,undefined];
+			if(isNaN(+ESuffix.Literal)){
+				ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Value}`]);
+				return[false,Value];
+			}
 			Value+=ESuffix.Literal;
 			return [true,Value];
 		}else if(AllowDecimal){
 			return this.ParseDecimal(Stack,Value);	
 		}else{
-        	if(!isNaN(+Value)){
-            	return [true,Value];
-            }
-        }
-		return [false,undefined];
+        		if(!isNaN(+Value)){
+            			return [true,Value];
+			}
+		}
+		return [false,Value];
 	}
 	ParseDecimal(Stack,Value){
 		let Next = Stack.Next();
 		if(Next&&Next.is("DOT","Operator")){
 			let Number = Stack.Next();
 			let [Success,Result] = this.ParseENumber(Stack,Number.Literal,false);
-			if(!Success)return[Success,Result];
+			if(!Success){
+				ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
+				return[Success,Result];
+			}
 			Value+="."+Result;
 		}else{
         	Stack.Next(-1);
@@ -200,13 +207,15 @@ class TokenizerStack {
 			if(Success)this.ToNumber(Token,+Result);
 		}else if(Token.isType("String")){
 			let Result = undefined;
-			if(Token.Name==="QUOTE")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("QUOTE",Token.Type),true));
-			else if(Token.Name==="APOS")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("APOS",Token.Type),true));
+			if(Token.Name==="QUOTE")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("QUOTE",Token.Type),true,true));
+			else if(Token.Name==="APOS")Result=this.CombineStringLiterals(this.GetBetween(Stack,T=>T.is("APOS",Token.Type),true,true));
 			if(!(Result===undefined))Token.Type="Constant",Token.Name="String",Token.Literal=Result;
+		}else if(Token.is("COMMENT","Operator")){
+			this.GetBetween(Stack,T=>T.isType("Whitespace")&&T.LineBreak===true);	
 		}
 		return Token;
 	}
-	GetBetween(Stack,EndCheck,AllowEscapes){
+	GetBetween(Stack,EndCheck,AllowEscapes=false,CheckEOS=false){
 		let Result = [];
 		while(!Stack.IsEnd()){
 			let Token = Stack.Next();
@@ -219,16 +228,19 @@ class TokenizerStack {
 			if(EndCheck(Token))break;
 			Result.push(Token);
 		}
+		if(CheckEOS&&Stack.Token.is("EOS","None"))ErrorHandler.TokenizerError(Stack,"Unexpected",["end of script"]);
 		return Result;
 	}
 	HandleTokenTypes(Tokens){
 		let Stack={
-			Index:0,
+			Position:0,
 			Tokens:Tokens,
 			Token:Tokens[0],
+			IndeX:0,
+			Line:0,
 			Result:[],
-			IsEnd:function(){return this.Index>=this.Tokens.length},
-			Next:function(Amount=1){this.Index+=Amount;this.Token=this.Tokens[this.Index];return this.Token},
+			IsEnd:function(){return this.Position>=this.Tokens.length},
+			Next:function(Amount=1){this.Position+=Amount;this.Token=this.Tokens[this.Position];if(this.Token)this.Index=this.Token.Index,this.Line=this.Token.Line;else this.Token=Tokenizer.EOSToken;return this.Token},
 			Write:function(Token){this.Result.push(Token);return Token},
 		};
 		while(!Stack.IsEnd()){
