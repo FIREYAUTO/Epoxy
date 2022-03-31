@@ -119,6 +119,7 @@ const Chunks = [
 			this.Next();
 			this.TypeTest(this.Token,"Identifier");
 			Node.Write("Name",this.Token.Literal);
+			this.Next();
 			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true,AllowVararg:true}));
 			this.Next();
 			Node.Write("Body",this.ParseBlock(" while parsing function body"));
@@ -232,6 +233,17 @@ const Expressions = [
 			this.Next();
 			let Node = this.NewNode("Length");
 			Node.Write("V1",this.ParseExpression(400));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Value:"IOPEN",
+		Type:"Bracket",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Array");
+			Node.Write("List",this.ExpressionListInside({Name:"IOPEN",Type:"Bracket"},{Name:"ICLOSE",Type:"Bracket"}));
 			return this.ASTExpression(Node,Priority);
 		},
 	},
