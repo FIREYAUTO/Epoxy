@@ -125,6 +125,30 @@ const Chunks = [
 			return Node;
 		},
 	},
+	{
+		Name:"RETURN",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("Return");
+			this.Next();
+			Node.Write("Expression",this.ExpressionList());
+			return Node;
+		},
+	},
+	{
+		Name:"BREAK",
+		Type:"Keyword",
+		Call:function(){
+			return this.NewNode("Break");
+		},
+	},
+	{
+		Name:"CONTINUE",
+		Type:"Keyword",
+		Call:function(){
+			return this.NewNode("Continue");
+		},
+	},
 	/*
 	{
 		Name:"Name",
