@@ -119,7 +119,7 @@ const Chunks = [
 			this.Next();
 			this.TypeTest(this.Token,"Identifier");
 			Node.Write("Name",this.Token.Literal);
-			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true}));
+			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true,AllowVararg:true}));
 			this.Next();
 			Node.Write("Body",this.ParseBlock(" while parsing function body"));
 			return Node;
@@ -224,29 +224,19 @@ const Expressions = [
 			return this.ASTExpression(Node,Priority);
 		},
 	},
-	/*
 	{
-				Value: "NOT",
-				Type: "Operator",
-				Stop: false,
-				Call: function (Priority) {
-					this.Next();
-					let Node = this.NewNode("Not");
-					Node.Write("V1", this.ParseExpression(400));
-					return [Node, Priority];
-				},
-			},
-			{
-				Value: "SUB",
-				Type: "Operator",
-				Stop: false,
-				Call: function (Priority) {
-					this.Next();
-					let Node = this.NewNode("Negative");
-					Node.Write("V1", this.ParseExpression(400));
-					return [Node, Priority];
-				},
-			},
+		Name:"LENGTH",
+		Type:"Operator",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			this.Next();
+			let Node = this.NewNode("Length");
+			Node.Write("V1",this.ParseExpression(400));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	/*
+	
 	*/
 	/*
 	{
