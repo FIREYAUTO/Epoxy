@@ -53,7 +53,8 @@ const RawTokens = [
 	new InternalToken("ELSEIF","elseif",Types[0]),
 	new InternalToken("BREAK","break",Types[0]),
 	new InternalToken("CONTINUE","continue",Types[0]),
-	new InternalToken("ITERATE","iter",Types[0]),
+	new InternalToken("DO","do",Types[0]),
+	new InternalToken("THEN","then",Types[0]),
 	//Whitespace Tokens
 	new InternalToken("SPACE",String.fromCharCode(32),Types[2]),
 	new InternalToken("TAB",String.fromCharCode(9),Types[2]),
