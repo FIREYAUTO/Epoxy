@@ -57,6 +57,7 @@ class ASTStack {
 	Next(Amount=1){
 		this.Position+=Amount;
 		this.Token=this.Tokens[this.Position];
+		if(this.Token)this.Line=this.Token.Line,this.Index=this.Token.Index;	
 		return this.Token;
 	}
 	IsEnd(){
@@ -145,6 +146,15 @@ class ASTStack {
 					break;
 				}
 			}
+			if(!Passed){
+				let Valid=false;
+				for(let CE of ASTComplexExpressions)
+					if(Next.is(CE.Name,CE.Type)){
+						Valid=true;
+						break
+					}
+				Passed=!Valid;
+			}
 			if(!Passed)return ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Next})} while parsing ${Type}`]);
 		}
 		for(let ComplexExpression of ASTComplexExpressions){
@@ -186,7 +196,7 @@ class ASTStack {
 				break;
 			}
 		}
-		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Token})} while parsing expression`]);
+		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Token})} while parsing ${EType}`]);
 		Result = this.ParseComplexExpression(new ASTExpression(Result,Priority),AllowList,Type);
 		return Result;
 	}
