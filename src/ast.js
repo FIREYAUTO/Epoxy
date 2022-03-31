@@ -235,7 +235,7 @@ class ASTStack {
 			this.Next();
 			this.ErrorIfEOS(" while parsing expression");
 			if(this.Token.is(End.Name,End.Type))return;
-			let Result = this.ExpressionList(Priority,AllowList,Type,End,EAllowList,EType);
+			let Result = this.ParseExpression(Priority,AllowList,Type,End,EAllowList,EType);
 			this.TestNext(End.Name,End.Type);
 			this.Next();
 			return Result;
