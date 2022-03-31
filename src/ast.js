@@ -217,7 +217,7 @@ class ASTStack {
 			return List;
 		}else{
 			let T = _Tokens.GetFromName(Start.Name,Start.Type);
-			ErrorHandler.ASTError(this,"ExpectedGot",[this.GetFT({UseType:true,UseLiteral:true,Type:Type,Name:Name,Literal:T?T.Literal:Name}),this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})]);
+			ErrorHandler.ASTError(this,"ExpectedGot",[this.GetFT({UseType:true,UseLiteral:true,Type:T.Type,Name:T.Name,Literal:T?T.Literal:T.Literal}),this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})]);
 		}
 	}
 	ExpressionInside(Start,End,Priority,AllowList,Type,EAllowList,EType){
@@ -231,7 +231,7 @@ class ASTStack {
 			return Result;
 		}else{
 			let T = _Tokens.GetFromName(Start.Name,Start.Type);
-			ErrorHandler.ASTError(this,"ExpectedGot",[this.GetFT({UseType:true,UseLiteral:true,Type:Type,Name:Name,Literal:T?T.Literal:Name}),this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})]);
+			ErrorHandler.ASTError(this,"ExpectedGot",[this.GetFT({UseType:true,UseLiteral:true,Type:T.Type,Name:T.Name,Literal:T?T.Literal:T.Literal}),this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})]);
 		}
 	}
 	//{{ Identifier Parsing Methods }}\\
@@ -268,6 +268,20 @@ class ASTStack {
 			break;
 		}while(true);
 		return List;
+	}
+	IdentifierListInside(Start,End,Options){
+		this.ErrorIfEOS(" while parsing identifier list");
+		if(this.Token.is(Start.Name,Start.Type)){
+			this.Next();
+			this.ErrorIfEOS(" while parsing identifier list");
+			if(this.Token.is(End.Name,End.Type))return[];
+			let List = this.IdentifierList(Options);
+			if(!End.Stopped)this.TestNext(End.Name,End.Type),this.Next();
+			return List;
+		}else{
+			let T = _Tokens.GetFromName(Start.Name,Start.Type);
+			ErrorHandler.ASTError(this,"ExpectedGot",[this.GetFT({UseType:true,UseLiteral:true,Type:T.Type,Name:T.Name,Literal:T?T.Literal:T.Literal}),this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})]);
+		}
 	}
 	//{{ Chunk Parsing Methods }}\\
 	ParseBlock(Type=" while parsing chunk",StartToken){
