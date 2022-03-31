@@ -245,7 +245,7 @@ class ASTStack {
 		}
 	}
 	//{{ Identifier Parsing Methods }}\\
-	IdentifierList(Options){
+	IdentifierList(Options,End){
 		let List = [];
 		do{
 			let Identifier = {
@@ -281,6 +281,10 @@ class ASTStack {
 			List.push(Identifier);
 			if(this.CheckNext("COMMA","Operator")){
 				this.Next(2);
+				if(End&&this.Token&&this.Token.is(End.Name,End.Type)){
+					End.Stopped=true;
+					break;
+				}
 				continue;
 			}
 			break;
@@ -293,7 +297,7 @@ class ASTStack {
 			this.Next();
 			this.ErrorIfEOS(" while parsing identifier list");
 			if(this.Token.is(End.Name,End.Type))return[];
-			let List = this.IdentifierList(Options);
+			let List = this.IdentifierList(Options,End);
 			if(!End.Stopped)this.TestNext(End.Name,End.Type),this.Next();
 			return List;
 		}else{
