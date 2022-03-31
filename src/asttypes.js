@@ -192,6 +192,7 @@ const Expressions = [
 			this.Next(2);
 			let Node = this.ParseExpression(-1);
 			this.TestNext("PCLOSE","Bracket");
+			this.Next();
 			return this.ASTExpression(Node,Priority);
 		},
 	},
