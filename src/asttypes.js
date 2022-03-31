@@ -70,6 +70,14 @@ const Expressions = [
 			return this.ASTExpression(Node,Priority);
 		},
 	},
+	{
+		Value:"LINEEND",
+		Type:"Operator",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			return this.ASTExpression(null,Priority);
+		},
+	},
 	/*
 	{
 		Name:"Name",
