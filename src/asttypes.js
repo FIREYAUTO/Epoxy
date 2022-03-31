@@ -238,7 +238,7 @@ const Expressions = [
 		},
 	},
 	{
-		Value:"IOPEN",
+		Name:"IOPEN",
 		Type:"Bracket",
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
