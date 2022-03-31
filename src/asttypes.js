@@ -185,7 +185,7 @@ const Expressions = [
 		},
 	},
 	{
-		Value:"POPEN",
+		Name:"POPEN",
 		Type:"Bracket",
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
@@ -197,7 +197,7 @@ const Expressions = [
 		},
 	},
 	{
-		Value:"LINEEND",
+		Name:"LINEEND",
 		Type:"Operator",
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
