@@ -254,6 +254,7 @@ class ASTStack {
 				Line:this.Token.Line,
 				Index:this.Token.Index,
 				Pointer:undefined,
+				Vararg:false,
 			}
 			if(Options.AllowPointer){
 				this.Test(this.Token,"POPEN","Bracket");
@@ -261,6 +262,13 @@ class ASTStack {
 				this.TypeTest(this.Token,"Identifier");
 				Identifier.Pointer = this.Token.Name;
 				this.TestNext("PCLOSE","Bracket");
+				this.Next(2);
+			}
+			if(Options.AllowVararg){
+				if(this.Check(this.Token,"VARARG","Operator")){
+					this.Next();
+					Identifier.Vararg=true;
+				}
 			}
 			this.TypeTest(this.Token,"Identifier");
 			Identifier.Name = this.Token.Name;
