@@ -270,11 +270,13 @@ class ASTStack {
 		return List;
 	}
 	//{{ Chunk Parsing Methods }}\\
-	ParseBlock(Type=" while parsing chunk"){
-		let Token=this.Token,
-			Block=this.OpenChunk();
-		this.Test(Token,"COLON","Operator");
-		this.Next();
+	ParseBlock(Type=" while parsing chunk",StartToken){
+		let Block=this.OpenChunk();
+		if(StartToken){
+			let Token=this.Token;
+			this.Test(Token,StartToken.Name,StartToken.Type);
+			this.Next();
+		}
 		this.ErrorIfEOS(Type);
 		while(!this.Token.is("CLOSE","Keyword")){
 			this.ParseChunk();
