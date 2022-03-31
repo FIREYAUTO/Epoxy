@@ -277,7 +277,7 @@ const ComplexExpressions = [
 			this.Next(2);
 			let Node = this.NewNode("Sub");
 			Node.Write("V1",Value);
-			if(this.Check("COLON","Operator")){
+			if(this.Check(this.Token,"COLON","Operator")){
 				if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"||Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
 				Node.Type = "Assignment";
 				this.Next();
@@ -298,7 +298,7 @@ const ComplexExpressions = [
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Add");
-			if(this.Check("COLON","Operator")){
+			if(this.Check(this.Token,"COLON","Operator")){
 				if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"||Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
 				Node.Type = "Assignment";
 				this.Next();
@@ -320,7 +320,7 @@ const ComplexExpressions = [
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Mul");
-			if(this.Check("COLON","Operator")){
+			if(this.Check(this.Token,"COLON","Operator")){
 				if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"||Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
 				Node.Type = "Assignment";
 				this.Next();
@@ -342,7 +342,7 @@ const ComplexExpressions = [
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Div");
-			if(this.Check("COLON","Operator")){
+			if(this.Check(this.Token,"COLON","Operator")){
 				if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"||Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
 				Node.Type = "Assignment";
 				this.Next();
@@ -364,7 +364,7 @@ const ComplexExpressions = [
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Mod");
-			if(this.Check("COLON","Operator")){
+			if(this.Check(this.Token,"COLON","Operator")){
 				if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"||Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
 				Node.Type = "Assignment";
 				this.Next();
@@ -386,7 +386,7 @@ const ComplexExpressions = [
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
 			let Node = this.NewNode("Pow");
-			if(this.Check("COLON","Operator")){
+			if(this.Check(this.Token,"COLON","Operator")){
 				if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"||Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
 				Node.Type = "Assignment";
 				this.Next();
