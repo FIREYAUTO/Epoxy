@@ -49,7 +49,7 @@ const Chunks = [
 			this.Next();
 			Node.Write("Object",this.ParseExpression());
 			this.Next();
-			Node.Write("Body",this.ParseBlock(" while parsing iteration loop body"));
+			Node.Write("Body",this.ParseBlock(" while parsing iteration loop body",ProxyToken("DO","Keyword")));
 			return Node;
 		},
 	},
@@ -61,7 +61,7 @@ const Chunks = [
 			this.Next();
 			Node.Write("Expression",this.ParseExpression());
 			this.Next();
-			Node.Write("Body",this.ParseBlock(" while parsing if statement"));
+			Node.Write("Body",this.ParseBlock(" while parsing if statement",ProxyToken("THEN","Keyword")));
 			let Conditions = [];
 			while(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword")){
 				if(this.CheckNext("ELSEIF","Keyword")){
@@ -69,7 +69,7 @@ const Chunks = [
 					let Condition = this.NewNode("ElseIf");
 					Condition.Write("Expression",this.ParseExpression());
 					this.Next();
-					Condition.Write("Body",this.ParseBlock(" while parsing elseif statement"));
+					Condition.Write("Body",this.ParseBlock(" while parsing elseif statement",ProxyToken("THEN","Keyword")));
 					Conditions.push(Condition);
 				}else if(this.CheckNext("ELSE","Keyword")){
 					this.Next(2);
@@ -94,6 +94,34 @@ const Chunks = [
 			Node.Write("Condition",this.ParseExpression());
 			this.TestNext("COMMA","Operator"),this.Next(2);
 			Node.Write("Increment",this.ParseExpression());
+			this.Next();
+			Node.Write("Body",this.ParseBlock(" while parsing loop body",ProxyToken("DO","Keyword")));
+			return Node;
+		},
+	},
+	{
+		Name:"While",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("While");
+			this.Next();
+			Node.Write("Condition",this.ParseExpression());
+			this.Next();
+			Node.Write("Body",this.ParseBlock(" while parsing while loop body",ProxyToken("DO","Keyword")));
+			return Node;
+		},
+	},
+	{
+		Name:"FUNCTION",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("NewFunction");
+			this.Next();
+			this.TypeTest(this.Token,"Identifier");
+			Node.Write("Name",this.Token.Literal);
+			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true}));
+			this.Next();
+			Node.Write("Body",this.ParseBlock(" while parsing function body"));
 			return Node;
 		},
 	},
