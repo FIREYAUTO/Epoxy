@@ -258,6 +258,7 @@ const ComplexExpressions = [
 		Priority:50,
 		Call:function(Value,Priority,AllowList,Type){
 			if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"&&Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
+			this.Next(2);
 			let Node = this.NewNode("Assignment");
 			Node.Write("Type",0);
 			Node.Write("Name",Value);
