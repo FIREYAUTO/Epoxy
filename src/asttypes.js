@@ -373,13 +373,13 @@ const ComplexExpressions = [
 		},
 	},
 	{
-		Name:"EQS",
+		Name:"EQ",
 		Type:"Operator",
 		Stop:false,
 		Priority:200,
 		Call:function(Value,Priority,AllowList,Type){
 			this.Next(2);
-			let Node = this.NewNode("Eqs");
+			let Node = this.NewNode("Eq");
 			Node.Write("V1",Value);
 			Node.Write("V2",this.ParseExpression(Priority));
 			return this.ASTExpression(Node,Priority);
