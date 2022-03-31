@@ -7,6 +7,14 @@ import {Tokens as _Tokens} from "https://fireyauto.github.io/Epoxy/src/tokens.js
 import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/astclasses.js";
 
 /*************************\
+    Internal Functions
+\*************************/
+
+function ProxyToken(Name,Type){
+	return {Name:Name,Type:Type};	
+}
+
+/*************************\
           Chunks
 \*************************/
 
@@ -39,9 +47,53 @@ const Chunks = [
 			else if(this.Check(this.Token,"AS","Keyword"))Node.Write("Getters",[0,1]);
 			else ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})} while parsing iteration loop`]);
 			this.Next();
-			Node.Write("Object",this.ParseExpression(51));
+			Node.Write("Object",this.ParseExpression());
 			this.Next();
-			Node.Write("Body",this.ParseBlock("while parsing iteration loop body"));
+			Node.Write("Body",this.ParseBlock(" while parsing iteration loop body"));
+			return Node;
+		},
+	},
+	{
+		Name:"IF",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("If");
+			this.Next();
+			Node.Write("Expression",this.ParseExpression());
+			this.Next();
+			Node.Write("Body",this.ParseBlock(" while parsing if statement"));
+			let Conditions = [];
+			while(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword")){
+				if(this.CheckNext("ELSEIF","Keyword")){
+					this.Next(2);
+					let Condition = this.NewNode("ElseIf");
+					Condition.Write("Expression",this.ParseExpression());
+					this.Next();
+					Condition.Write("Body",this.ParseBlock(" while parsing elseif statement"));
+					Conditions.push(Condition);
+				}else if(this.CheckNext("ELSE","Keyword")){
+					this.Next(2);
+					let Condition = this.NewNode("Else");
+					Condition.Write("Body",this.ParseBlock(" while parsing else statement"));
+					Conditions.push(Condition);
+					break;
+				}
+			}
+			Node.Write("Conditions",Conditions);
+			return Node;
+		},
+	},
+	{
+		Name:"LOOP",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("For");
+			this.Next();
+			Node.Write("Variables",this.IdentifierList({AllowDefault:true}));
+			this.TestNext("COMMA","Operator"),this.Next(2);
+			Node.Write("Condition",this.ParseExpression());
+			this.TestNext("COMMA","Operator"),this.Next(2);
+			Node.Write("Increment",this.ParseExpression());
 			return Node;
 		},
 	},
