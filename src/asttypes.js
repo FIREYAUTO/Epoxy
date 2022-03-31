@@ -241,7 +241,6 @@ const Expressions = [
 		Type:"Bracket",
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
-			this.Next(2);
 			let Node = this.NewNode("Array");
 			Node.Write("List",this.ExpressionListInside({Name:"IOPEN",Type:"Bracket"},{Name:"ICLOSE",Type:"Bracket"}));
 			return this.ASTExpression(Node,Priority);
