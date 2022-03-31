@@ -25,6 +25,26 @@ const Chunks = [
 			return Node;
 		},
 	},
+	{
+		Name:"ITERATE",
+		Type:"Keyword",
+		Call:function(){
+			this.Next();
+			let Node = this.NewNode("IterationLoop");
+			Node.Write("Variables",this.IdentifierList({AllowDefault:false,AllowPointers:false}));
+			this.Next();
+			this.ErrorIfEOS(" while parsing iteration loop");
+			if(this.Check(this.Token,"IN","Keyword"))Node.Write("Getters",[0]);
+			else if(this.Check(this.Token,"OF","Keyword"))Node.Write("Getters",[1]);
+			else if(this.Check(this.Token,"AS","Keyword"))Node.Write("Getters",[0,1]);
+			else ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:this.Token})} while parsing iteration loop`]);
+			this.Next();
+			Node.Write("Object",this.ParseExpression(51));
+			this.Next();
+			Node.Write("Body",this.ParseBlock("while parsing iteration loop body"));
+			return Node;
+		},
+	},
 	/*
 	{
 		Name:"Name",
@@ -78,6 +98,52 @@ const Expressions = [
 			return this.ASTExpression(null,Priority);
 		},
 	},
+	{
+		Name:"NOT",
+		Type:"Operator",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			this.Next();
+			let Node = this.NewNode("Not");
+			Node.Write("V1",this.ParseExpression(400));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"SUB",
+		Type:"Operator",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			this.Next();
+			let Node = this.NewNode("Negative");
+			Node.Write("V1",this.ParseExpression(400));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	/*
+	{
+				Value: "NOT",
+				Type: "Operator",
+				Stop: false,
+				Call: function (Priority) {
+					this.Next();
+					let Node = this.NewNode("Not");
+					Node.Write("V1", this.ParseExpression(400));
+					return [Node, Priority];
+				},
+			},
+			{
+				Value: "SUB",
+				Type: "Operator",
+				Stop: false,
+				Call: function (Priority) {
+					this.Next();
+					let Node = this.NewNode("Negative");
+					Node.Write("V1", this.ParseExpression(400));
+					return [Node, Priority];
+				},
+			},
+	*/
 	/*
 	{
 		Name:"Name",
@@ -262,7 +328,7 @@ const ComplexExpressions = [
 	{
 		Name:"COLON",
 		Type:"Operator",
-		Stop:false,
+		Stop:true,
 		Priority:50,
 		Call:function(Value,Priority,AllowList,Type){
 			if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"&&Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected","identifier or index for assignment");
@@ -306,8 +372,113 @@ const ComplexExpressions = [
 			return this.ASTExpression(Node,Priority);
 		},
 	},
+	{
+		Name:"EQS",
+		Type:"Operator",
+		Stop:false,
+		Priority:200,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Eqs");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"LT",
+		Type:"Operator",
+		Stop:false,
+		Priority:200,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Lt");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"LEQ",
+		Type:"Operator",
+		Stop:false,
+		Priority:200,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Leq");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"GT",
+		Type:"Operator",
+		Stop:false,
+		Priority:200,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Gt");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"GEQ",
+		Type:"Operator",
+		Stop:false,
+		Priority:200,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Geq");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"NEQ",
+		Type:"Operator",
+		Stop:false,
+		Priority:200,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Neq");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"AND",
+		Type:"Operator",
+		Stop:false,
+		Priority:150,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("And");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"OR",
+		Type:"Operator",
+		Stop:false,
+		Priority:151,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Or");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
 	/*
 	
+	*/
 	/*
 	{
 		Name:"Name",
