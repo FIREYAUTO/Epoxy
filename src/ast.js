@@ -65,7 +65,7 @@ class ASTStack {
 	}
 	//{{ Token Naming Methods }}\\
 	GetFT(Options={}){
-		if(this.IsEnd())return "end of script";
+		if(this.IsEnd()&&(!Options.Tokens&&!Options.Type))return "end of script";
 		let Type = Options.Token?Options.Token.Type:Options.Type,
 			Literal = Options.Token?Options.Token.Literal:Options.Literal,
 			Name = Options.Token?Options.Token.Name:Options.Name;
@@ -336,7 +336,7 @@ class ASTStack {
 			}
 		}
 		let Result = this.ParseExpression(-1,[["COLON","Operator"],["DOT","Operator"],["POPEN","Bracket"],["ADD","Operator"],["SUB","Operator"],["MUL","Operator"],["DIV","Operator"],["MOD","Operator"],["POW","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
-		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",this.GetFT({UseType:true,UseLiteral:true,Token:this.Token}));
+		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",this.GetFT({UseType:true,UseLiteral:true,Token:Token}));
 		if(!(Result instanceof ASTBase)||!["Assignment","Call","SelfCall"].includes(Result.Type))ErrorHandler.ASTError(this,"Invalid","syntax");
 		this.SkipLineEnd();
 		this.ChunkWrite(Result);
