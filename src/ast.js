@@ -207,6 +207,7 @@ class ASTStack {
 		return List;
 	}
 	ExpressionListInside(Start,End,Priority,AllowList,Type,EAllowList,EType){
+		this.ErrorIfEOS(" while parsing expression list");
 		if(this.Token.is(Start.Name,Start.Type)){
 			this.Next();
 			this.ErrorIfEOS(" while parsing expression list");
