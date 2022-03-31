@@ -133,7 +133,7 @@ class ASTStack {
 		let Priority=Expression.Priority,
 			Next=this.Tokens[this.Position+1],
 			Current=this.Token;
-		if(!Next)return  Expression.Value;
+		if(!Next)return Expression.Value;
 		if(Next.is("LINEEND","Operator"))return Expression.Value;
 		if(Next.isType("Identifier")&&Current.isType("Identifier"))ErrorHandler.ASTError(this,"Unexpected",[`identifier while parsing ${Type}`]);
 		let Allowed=AllowList.length>0,
@@ -145,7 +145,7 @@ class ASTStack {
 					break;
 				}
 			}
-			if(!Passed)return ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseValue:true,Token:Next})} while parsing ${Type}`]);
+			if(!Passed)return ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Next})} while parsing ${Type}`]);
 		}
 		for(let ComplexExpression of ASTComplexExpressions){
 			if(!Next.is(ComplexExpression.Name,ComplexExpression.Type))continue;
@@ -176,7 +176,7 @@ class ASTStack {
 						else if(TY==="Type"&&Allow.length==1) Passed=Token.isType(...Allow);
 						if(Passed)break;
 					}
-					if(!Passed)return ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseValue:true,Token:Token})} while parsing ${EType}`]);
+					if(!Passed)return ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Token})} while parsing ${EType}`]);
 				}
 				let Exp = Expression.Call.bind(this)(Priority,AllowList,Type);
 				Result = Exp.Value;
@@ -295,8 +295,9 @@ class ASTStack {
 				return;
 			}
 		}
-		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"],["DOT","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
+		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"],["DOT","Operator"],["POPEN","Bracket"],["ADD","Operator"],["SUB","Operator"],["MUL","Operator"],["DIV","Operator"],["MOD","Operator"],["POW","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
 		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",this.GetFT({UseType:true,UseLiteral:true,Token:this.Token}));
+		if(!(Result instanceof ASTBase)||!["Assignment","Call","SelfCall"].includes(Result.Type))ErrorHandler.ASTError(this,"Invalid","syntax");
 		this.SkipLineEnd();
 		this.ChunkWrite(Result);
 	}
