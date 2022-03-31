@@ -153,6 +153,7 @@ class ASTStack {
 				Expression = ComplexExpression.Call.bind(this)(Expression.Value,ComplexExpression.Priority,AllowList,Type);
 				Expression.Priority = Priority;
 				if(ComplexExpression.Stop===true)break;
+				if(Expression.Value instanceof ASTBase&&Expression.Value.Type==="Assignment")return Expression.Value;
 				let Result=this.ParseComplexExpression(Expression,AllowList,Type);
 				return Result;
 			}
