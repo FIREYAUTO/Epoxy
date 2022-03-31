@@ -297,6 +297,7 @@ class ASTStack {
 		}
 		let Result = this.ParseExpression(-1,[["OF","Keyword"],["AS","Keyword"],["IN","Keyword"],["COLON","Operator"],["DOT","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
 		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",this.GetFT({UseType:true,UseLiteral:true,Token:this.Token}));
+		this.SkipLineEnd();
 		this.ChunkWrite(Result);
 	}
 	Parse(){
