@@ -100,7 +100,7 @@ const Chunks = [
 		},
 	},
 	{
-		Name:"While",
+		Name:"WHILE",
 		Type:"Keyword",
 		Call:function(){
 			let Node = this.NewNode("While");
@@ -132,6 +132,10 @@ const Chunks = [
 		Call:function(){
 			let Node = this.NewNode("Return");
 			this.Next();
+			if(this.Check(this.Token,"CLS","Keyword")){
+				Node.Write("Expression",null);
+				return Node;
+			}
 			Node.Write("Expression",this.ExpressionList());
 			return Node;
 		},
@@ -245,6 +249,39 @@ const Expressions = [
 			let Node = this.NewNode("Array");
 			Node.Write("List",this.ExpressionListInside({Name:"IOPEN",Type:"Bracket"},{Name:"ICLOSE",Type:"Bracket"}));
 			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"BOPEN",
+		Type:"Bracket",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			let Node = this.NewNode("Object");
+			Node.Write("Object",this.IdentifierListInside(ProxyToken("BOPEN","Bracket"),ProxyToken("BCLOSE","Bracket"),{AllowDefault:true}));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"VARARG",
+		Type:"Operator",
+		Stop:false,
+		Call:function(Priority,AllowList,Type){
+			let Node = this.NewNode("Unpack");
+			this.Next();
+			Node.Write("List",this.ParseExpression());
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"FUNCTION",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("NewFastFunction");
+			this.Next();
+			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true,AllowVararg:true}));
+			this.Next();
+			Node.Write("Body",this.ParseBlock(" while parsing function body"));
+			return this.ASTExpression(Node,Priority);;
 		},
 	},
 	/*
