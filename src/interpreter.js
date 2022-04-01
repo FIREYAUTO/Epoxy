@@ -20,7 +20,7 @@ const DefaultEnvironment = {
 
 const Interpreter = {
 	New:function(ASTStack,Environment={}){
-		return new IntepreterStack(ASTStack,Environment);
+		return new InterpreterStack(ASTStack,Environment);
 	},
 	GetType:function(Value){
 		let Type=typeof Value;
@@ -65,7 +65,7 @@ class InterpreterStack {
 				if(Unpack===true){
 					let List=await this.Parse(State,Token.Read("List"),true);
 					return new UnpackState(List);
-				}else ErrorHandler.IntepreterError(Token,"Unexpected",["unpacking operator"]);
+				}else ErrorHandler.InterpreterError(Token,"Unexpected",["unpacking operator"]);
 			}
 		}
 	}
