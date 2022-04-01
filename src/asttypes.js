@@ -463,7 +463,7 @@ const ComplexExpressions = [
 			let Node = this.NewNode("GetIndex");
 			Node.Write("Object",Value);
 			let Token = this.Token;
-			if(!Token.is("Identifier")&&!Token.is("Keyword"))ErrorHandler.ASTError(this,"ExpectedGot",["identifier for index name",this.GetFT({UseType:true,UseLiteral:true,Token:Token})]);
+			if(!Token.isType("Identifier")&&!Token.isType("Keyword"))ErrorHandler.ASTError(this,"ExpectedGot",["identifier for index name",this.GetFT({UseType:true,UseLiteral:true,Token:Token})]);
 			Node.Write("Index",Token.Literal);
 			return this.ASTExpression(Node,Priority);
 		},
