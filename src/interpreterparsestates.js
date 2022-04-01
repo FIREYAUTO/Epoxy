@@ -62,19 +62,19 @@ const InterpreterStates = {
 				let Variable=State.GetGlobalRawVariable(Name);
 				if(Variable){
 					let Previous=Variable.Value;
-					State.SetVariable(Name,Call(State,Variable.Value,Value));
+					State.SetVariable(Name,await Call(State,Variable.Value,Value));
 					return Variable.Value;
 				}else{
-					let Result=Call(State,null,Value);
+					let Result=await Call(State,null,Value);
 					State.SetVariable(Name,Result);
 					return Result;
 				}
 			}else if(Name.Type==="GetIndex"){
 				let Obj = await this.Parse(State,Name.Read("Object")),
 					Index = await this.Parse(State,Name.Read("Index")),
-					ObjIndex = OperatorStates.index(State,Obj,Index);
+					ObjIndex = await OperatorStates.index(State,Obj,Index);
 				let Result = Call(State,ObjIndex,Value);
-				OperatorStates.setIndex(Obj,Index,Result);
+				await OperatorStates.setIndex(Obj,Index,Result);
 				return Result;
 			}
 		}else{
