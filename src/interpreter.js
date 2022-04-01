@@ -121,15 +121,15 @@ class InterpreterStack {
 				if(Argument===undefined)Argument=await self.Parse(State,Parameter.Value);
 				NewState.NewVariable(Parameter.Name,Argument);
 				if(Stop)break;
-				for(let Variable of GlobalVariables)NewState.TransferVariable(Variable);
-				await self.ParseState(NewState);
-				let Returns = NewState.Read("Returns");
-				if(Returns.length>1){
-					return new UnpackState(Returns);
-				}
-				if(Returns[0]===undefined)Returns[0]=null;
-				return Returns[0];
 			}
+			for(let Variable of GlobalVariables)NewState.TransferVariable(Variable);
+			await self.ParseState(NewState);
+			let Returns = NewState.Read("Returns");
+			if(Returns.length>1){
+				return new UnpackState(Returns);
+			}
+			if(Returns[0]===undefined)Returns[0]=null;
+			return Returns[0];
 		}
 	}
 	/*
