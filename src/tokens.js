@@ -105,6 +105,7 @@ const RawTokens = [
 	new InternalToken("LINEEND",";",Types[3]),
 	new InternalToken("COMMA",",",Types[3]),
 	new InternalToken("LENGTH","#",Types[3]),
+	new InternalToken("SELFCALL",">>",Types[3]),
 	//Bracket Tokens
 	new InternalToken("BOPEN","{",Types[4]),
 	new InternalToken("BCLOSE","}",Types[4]),
