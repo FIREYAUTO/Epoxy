@@ -90,9 +90,9 @@ const Chunks = [
 			let Node = this.NewNode("For");
 			this.Next();
 			Node.Write("Variables",this.IdentifierList({AllowDefault:true}));
-			this.TestNext("COMMA","Operator"),this.Next(2);
+			this.TestNext("LINEEND","Operator"),this.Next(2);
 			Node.Write("Condition",this.ParseExpression());
-			this.TestNext("COMMA","Operator"),this.Next(2);
+			this.TestNext("LINEEND","Operator"),this.Next(2);
 			Node.Write("Increment",this.ParseExpression());
 			this.Next();
 			Node.Write("Body",this.ParseBlock(" while parsing loop body",ProxyToken("DO","Keyword")));
