@@ -129,40 +129,19 @@ const InterpreterStates = {
 	Call:async function(State,Token){
 		let Call = await this.Parse(State,Token.Read("Call")),
 			Arguments = await this.ParseArray(State,Token.Read("Arguments"));
+		if(!(Call instanceof Function))ErrorHandler.InterpreterError(Token,"Attempt",["to call non-function"]);
+		return await Call(this,State,...Arguments);
+	},
+	SelfCall:async function(State,Token){
+		let Obj = await this.Parse(State,Token.Read("Object")),
+		    Index = await this.Parse(State,Token.Read("Index")),
+		    Arguments = await this.ParseArray(State,Token.Read("Arguments")),
+		    Call = OperatorStates.index(Obj,Index);
+		if(!(Call instanceof Function))ErrorHandler.InterpreterError(Token,"Attempt",[`to call non-function ${Index}`]);
+		return await Call(this,State,Obj,...Arguments);
 	},
 	/*
-	Call: function (State, Token) {
-				let Call = this.Parse(State, Token.Read("Call"));
-				let Arguments = this.ParseArray(State, Token.Read("Arguments"));
-				let M = this.GetAdvancedMethod(State,Call,"call");
-				if(M&&typeof M==="function")return this.DoCall(State,Call,Arguments);
-				if (!(Call instanceof Function)) {
-					ErrorHandler.IError(Token, "Attempt", "call non-function");
-				}
-				return this.DoCall(State,Call,Arguments);
-			},
-			SelfCall: function (State, Token) {
-				let O = this.Parse(State, Token.Read("Object"));
-				let I = this.Parse(State, Token.Read("Index"));
-				let Obj = O;
-				let Pr = false;
-				if (State.Read("IsClass") === true && State.Read("Classes").includes(O)) {
-					let Private = State.Read("Private");
-					if (Private.hasOwnProperty(I)) {
-						O = Private;
-						Pr = true;
-					}
-				}
-				let Arguments = this.ParseArray(State, Token.Read("Arguments"));
-				let Call = O[I];
-				let M = this.GetAdvancedMethod(State,O,"index");
-				if(M&&typeof M==="function"&&!Pr)Call=this.DoCall(State,M,[Obj,I]);
-				if (!(Call instanceof Function)) {
-					ErrorHandler.IError(Token, "Attempt", "call non-function");
-				}
-				Arguments.unshift(Obj);
-				return this.DoCall(State,Call,Arguments);
-			},
+	
 	*/
 }
 
