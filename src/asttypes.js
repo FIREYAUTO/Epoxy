@@ -193,7 +193,7 @@ const Expressions = [
 		Type:"Bracket",
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
-			this.Next(2);
+			this.Next();
 			let Node = this.ParseExpression(-1);
 			this.TestNext("PCLOSE","Bracket");
 			this.Next();
