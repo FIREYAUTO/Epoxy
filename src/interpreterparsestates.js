@@ -3,6 +3,7 @@
 \*************************/
 
 import {ErrorHandler} from "https://fireyauto.github.io/Epoxy/src/errorhandling.js";
+import {EpoxyState} from "https://fireyauto.github.io/Epoxy/src/interpreterstate.js";
 
 /*************************\
       Internal States
@@ -186,39 +187,96 @@ const InterpreterStates = {
 		}
 		return Result;
 	},
-	/*
-			Object: function (State, Token) {
-				let O = Token.Read("Object"),
-				    	self = this;
-				let R = {};
-				Object.defineProperty(R,"toString",{
-					value:function(){
-						if(R.__tostring)return self.DoCall(State,R.__tostring,[R]);	
-						return "[XBS Object]";
-					},
-					enumerable:false,
-					configurable:false,
-					writeable:false,
-				});
-				for (let v of O) {
-					let Value = this.Parse(State, v.Value),
-						Type = v.Type,
-						Name = this.Parse(State, v.Name);
-					if(Type){
-						this.TypeCheck(State,Value,Type);	
+	Object:async function(State,Token){
+		let Obj = Token.Read("Object"),
+		    Result = {};
+		for(let V of Obj)
+			if(V.Value===undefined)Result[V.Name]=State.GetVariable(V.Name);
+			else Result[V.Name]=await this.Parse(State,V.Value);
+		return Result;
+	},
+	If:async function(State,Token){
+		let Expression = await this.Parse(State,Token.Read("Expression")),
+		    Conditions = Token.Read("Conditions"),
+		    Body = Token.Read("Body");
+		if(Expression){
+			let NewState = new EpoxyState(Body,State);
+			await this.ParseState(NewState);
+		}else{
+			for(let Condition of Conditions){
+				if(Condition.Type === "ElseIf"){
+					let Exp = await this.Parse(State,Condition.Read("Expression")),
+					    Bd = Condition.Read("Body");
+					if(Exp){
+						let NewState = new EpoxyState(Bd,State);
+						await this.ParseState(NewState);
+						break;
 					}
-					if(v.Constant===true){
-						Object.defineProperty(R, Name, {
-							value: Value,
-							writeable: false,
-							enumerable: true,
-						});
-					}else{
-						R[Name] = Value;
-					}
+				}else if(Condition.Type === "Else"){
+					let Bd = Condition.Read("Body");
+					let NewState = new EpoxyState(Bd,State);
+					await this.ParseState(NewState);
+					break;
 				}
-				return R;
-			},
+			}
+		}
+	},
+	While:async function(State,Token){
+		let Expression = Token.Read("Condition"),
+			Body = Token.Read("Body");
+		while(await this.Parse(State,Expression)){
+			let NewState = new EpoxyState(Body,State,{InLoop:true,IsLoop:true});
+			await this.ParseState(NewState);
+			if(!NewState.Read("InLoop"))break;
+		}
+	},
+	For:async function(State,Token){
+		let Variables = Token.Read("Variables"),
+			Expression = Token.Read("Condition"),
+			Body = Token.Read("Body"),
+			Increment = Token.Read("Increment");
+		let ProxyState = new EpoxyState({Data:[],Line:Token.Line,Index:Token.Index},State);
+		for(let Variable of Variables)ProxyState.NewVariable(Variable.Name,await this.Parse(ProxyState,Variable.Value));
+		while(await this.Parse(ProxyState,Expression)){
+			let NewState = new EpoxyState(Body,ProxyState,{InLoop:true,IsLoop:true});
+			await this.ParseState(NewState);
+			if(!NewState.Read("InLoop"))break;
+			await this.Parse(ProxyState,Increment);
+		}
+		ProxyState.Close();
+	},
+	IterationLoop:async function(State,Token){
+		let Variables = Token.Read("Variables"),
+		    Getters = Token.Read("Getters"),
+		    Iterator = await this.Parse(State,Token.Read("Object")),
+		    Body = Token.Read("Body");
+		for(let k in Iterator){
+			let v=Iterator[k],
+			    NewState = new EpoxyState(Body,State,{InLoop:true,IsLoop:true}),
+			    Gets=[k,v];
+			for(let Name of Getters)NewState.NewVariable(Variables[Name].Name,Gets[Name]);
+			await this.ParseState(NewState);
+			if(!NewState.Read("InLoop"))break;
+		}
+	},
+	Return:async function(State,Token){
+		let Expressions = await this.ParseArray(State,Token.Read("Expression"));
+		State.Write("Returned",true);
+		State.Write("Returns",Expressions);
+	},
+	Break:async function(State,Token){
+		State.Write("Break",true);	
+	},
+	Continue:async function(State,Token){
+		State.Write("Continue",true);	
+	},
+	NewFunction:async function(State,Token){
+		State.NewVariable(Token.Read("Name"),await this.FunctionState(State,Token));	
+	},
+	NewFastFunction:async function(State,Token){
+		return await this.FunctionState(State,Token);	
+	},
+	/*
 	*/
 }
 
