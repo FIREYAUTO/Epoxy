@@ -23,9 +23,9 @@ function Main(Code,Environment={}){
 			Result.TStack=TStack,
 			Result.AStack=AStack,
 			Result.IStack=IStack;
-	}catch(Result){
+	}catch(Error){
 		Result.Success=false,
-			Result.Error=Result;
+			Result.Error=Error;
 	}
 	return Result;
 }
