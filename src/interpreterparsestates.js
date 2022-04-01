@@ -180,7 +180,7 @@ const InterpreterStates = {
 	Array:async function(State,Token){
 		let List = Token.Read("List"),
 		    Result = [];
-		for(let v of Array){
+		for(let v of List){
 			let d = await this.Parse(State,v,true);
 			if(d instanceof this.UnpackStateClass)for(let x of d.List)Result.push(x);
 			else Result.push(d);
