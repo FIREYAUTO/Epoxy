@@ -29,6 +29,7 @@ const OperatorStates = {
 	lt:(s,a,b)=>a<b,
 	leq:(s,a,b)=>a<=b,
 	neq:(s,a,b)=>a!=b,
+	len:(s,a)=>a.length,
 };
 
 const AssignmentStates = {
@@ -284,6 +285,10 @@ const InterpreterStates = {
 		let Obj = await this.Parse(State,Token.Read("Object")),
 		    Index = await this.Parse(State,Token.Read("Index"));
 		return await OperatorStates.index(State,Obj,Index);
+	},
+	Length:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1"));
+		return await OperatorStates.len(State,V1);
 	},
 	/*
 	*/
