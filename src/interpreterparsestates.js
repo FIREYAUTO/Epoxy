@@ -21,6 +21,12 @@ const OperatorStates = {
 	not:(s,a)=>!a,
 	and:(s,a,b)=>a&&b,
 	or:(s,a,b)=>a||b,
+	eq:(s,a,b)=>a===b,
+	gt:(s,a,b)=>a>b,
+	geq:(s,a,b)=>a>=b,
+	lt:(s,a,b)=>a<b,
+	leq:(s,a,b)=>a<=b,
+	neq:(s,a,b)=>a!=b,
 };
 
 const AssignmentStates = {
@@ -126,6 +132,36 @@ const InterpreterStates = {
 			return OperatorStates.or(State,V1,V2);
 		}else return V1;
 	},
+	Eq:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2"));
+		return OperatorStates.eq(State,V1,V2);
+	},
+	Lt:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2"));
+		return OperatorStates.lt(State,V1,V2);
+	},
+	Leq:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2"));
+		return OperatorStates.leq(State,V1,V2);
+	},
+	Gt:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2"));
+		return OperatorStates.gt(State,V1,V2);
+	},
+	Geq:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2"));
+		return OperatorStates.geq(State,V1,V2);
+	},
+	Neq:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2"));
+		return OperatorStates.neq(State,V1,V2);
+	},
 	Call:async function(State,Token){
 		let Call = await this.Parse(State,Token.Read("Call")),
 			Arguments = await this.ParseArray(State,Token.Read("Arguments"));
@@ -140,8 +176,49 @@ const InterpreterStates = {
 		if(!(Call instanceof Function))ErrorHandler.InterpreterError(Token,"Attempt",[`to call non-function ${Index}`]);
 		return await Call(this,State,Obj,...Arguments);
 	},
+	Array:async function(State,Token){
+		let List = Token.Read("List"),
+		    Result = [];
+		for(let v of Array){
+			let d = await this.Parse(State,v,true);
+			if(d instanceof this.UnpackStateClass)for(let x of d.List)Result.push(x);
+			else Result.push(d);
+		}
+		return Result;
+	},
 	/*
-	
+			Object: function (State, Token) {
+				let O = Token.Read("Object"),
+				    	self = this;
+				let R = {};
+				Object.defineProperty(R,"toString",{
+					value:function(){
+						if(R.__tostring)return self.DoCall(State,R.__tostring,[R]);	
+						return "[XBS Object]";
+					},
+					enumerable:false,
+					configurable:false,
+					writeable:false,
+				});
+				for (let v of O) {
+					let Value = this.Parse(State, v.Value),
+						Type = v.Type,
+						Name = this.Parse(State, v.Name);
+					if(Type){
+						this.TypeCheck(State,Value,Type);	
+					}
+					if(v.Constant===true){
+						Object.defineProperty(R, Name, {
+							value: Value,
+							writeable: false,
+							enumerable: true,
+						});
+					}else{
+						R[Name] = Value;
+					}
+				}
+				return R;
+			},
 	*/
 }
 
