@@ -276,6 +276,11 @@ const InterpreterStates = {
 	NewFastFunction:async function(State,Token){
 		return await this.FunctionState(State,Token);	
 	},
+	GetIndex:async function(State,Token){
+		let Obj = await this.Parse(State,Token.Read("Object")),
+		    Index = await this.Parse(State,Token.Read("Index"));
+		return await OperatorStates.index(Obj,Index);
+	},
 	/*
 	*/
 }
