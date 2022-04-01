@@ -254,7 +254,10 @@ const InterpreterStates = {
 			let v=Iterator[k],
 			    NewState = new EpoxyState(Body,State,{InLoop:true,IsLoop:true}),
 			    Gets=[k,v];
-			for(let Name of Getters)NewState.NewVariable(Variables[Name].Name,Gets[Name]);
+			for(let Key of Variables){
+				let Variable = Variables[Key];
+				NewState.NewVariable(Variable.Name,Gets[Getters[Key]]);
+			}
 			await this.ParseState(NewState);
 			if(!NewState.Read("InLoop"))break;
 		}
