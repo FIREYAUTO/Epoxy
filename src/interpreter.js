@@ -51,7 +51,7 @@ class InterpreterStack {
 				Environment[Name]=DefaultEnvironment[Name];
 		for(let Name in Environment)this.MainState.NewVariable(Name,Environment[Name]);
 		this.States = {};
-		for(let Name in InterpreterStates)this.States[Name=InterpreterStates[Name].bind(this);
+		for(let Name in InterpreterStates)this.States[Name]=InterpreterStates[Name].bind(this);
 	}
 	UnpackState(...Arguments){
 		return new UnpackState(...Arguments);
