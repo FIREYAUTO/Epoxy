@@ -27,6 +27,7 @@ function Main(Code,Environment={}){
 		Result.Success=false,
 			Result.Error=Result;
 	}
+	return Result;
 }
 
 /*************************\
