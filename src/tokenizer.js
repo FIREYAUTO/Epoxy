@@ -199,11 +199,13 @@ class TokenizerStack {
 				Token.Literal = null,
 				Token.Name = "Null";
 		}else if(Token.isType("Identifier")){
+			let Position = Stack.Position;
 			let [Success,Result] = this.ParseNumber(Stack,Token);
 			if(Success){
 				if(isNaN(+Result))return ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
 				this.ToNumber(Token,+Result);
 			}else{
+				Stack.To(Position);
 				if(Result.match(/^[0-9]/))return ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
 			}
 		}else if(Token.isType("String")){
@@ -244,6 +246,7 @@ class TokenizerStack {
 			IsEnd:function(){return this.Position>=this.Tokens.length},
 			Next:function(Amount=1){this.Position+=Amount;this.Token=this.Tokens[this.Position];if(this.Token)this.Index=this.Token.Index,this.Line=this.Token.Line;else this.Token=Tokenizer.EOSToken;return this.Token},
 			Write:function(Token){this.Result.push(Token);return Token},
+			To:function(Position){this.Position=Position;this.Token=this.Tokens[this.Position];if(this.Token)this.Index=this.Token.Index,this.Line=this.Token.Line;else this.Token=Tokenizer.EOSToken;return this.Token},
 		};
 		while(!Stack.IsEnd()){
 			let Result = this.ParseTokenType(Stack,Stack.Token);
