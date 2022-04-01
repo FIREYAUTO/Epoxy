@@ -279,7 +279,7 @@ const InterpreterStates = {
 	GetIndex:async function(State,Token){
 		let Obj = await this.Parse(State,Token.Read("Object")),
 		    Index = await this.Parse(State,Token.Read("Index"));
-		return await OperatorStates.index(Obj,Index);
+		return await OperatorStates.index(State,Obj,Index);
 	},
 	/*
 	*/
