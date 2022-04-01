@@ -1,5 +1,5 @@
 /*************************\
-		  Imports
+         Imports
 \*************************/
 
 import {EpoxyState} from "https://fireyauto.github.io/Epoxy/src/interpreterstate.js";
@@ -52,6 +52,7 @@ class InterpreterStack {
 		for(let Name in Environment)this.MainState.NewVariable(Name,Environment[Name]);
 		this.States = {};
 		for(let Name in InterpreterStates)this.States[Name]=InterpreterStates[Name].bind(this);
+		this.UnpackStateClass = UnpackState;
 	}
 	UnpackState(...Arguments){
 		return new UnpackState(...Arguments);
