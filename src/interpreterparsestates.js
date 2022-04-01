@@ -4,6 +4,7 @@
 
 import {ErrorHandler} from "https://fireyauto.github.io/Epoxy/src/errorhandling.js";
 import {EpoxyState} from "https://fireyauto.github.io/Epoxy/src/interpreterstate.js";
+import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/astclasses.js";
 
 /*************************\
       Internal States
