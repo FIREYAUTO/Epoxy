@@ -100,6 +100,41 @@ class InterpreterStack {
 		}
 		return Result;
 	}
+	async FunctionState(State,Token){
+		let Parameters=Token.Read("Parameters"),
+		    GlobalVariables=State.GetGlobalVariables(),
+		    self=this,
+		    Body=Token.Read("Body");
+		return async function(Stack,CState,...Arguments){
+			let NewState=new EpoxyState(Body,State,{IsFunction:true}),
+			    Stop=false;
+			for(let Key in Parameters){
+				let Parameter = Parameters[Key],
+				    Argument = Arguments[Key];
+				if(Parameter.Vararg===true){
+					let K=+Key,List=[];
+					for(let i=K;i<Arguments.length;i++)List.push(await self.Parse(State,Arguments[i]));
+					Argument=List;
+					if(Argument.length===0)Argument=undefined;
+					Stop=true;
+				}
+				if(Argument===undefined)Argument=await self.Parse(State,Parameter.Value);
+				NewState.NewVariable(Parameter.Name,Argument);
+				if(Stop)break;
+				for(let Variable of GlobalVariables)NewState.TransferVariable(Variable);
+				await self.ParseState(NewState);
+				let Returns = NewState.Read("Returns");
+				if(Returns.length>1){
+					return new UnpackState(Returns);
+				}
+				if(Returns[0]===undefined)Returns[0]=null;
+				return Returns[0];
+			}
+		}
+	}
+	/*
+	
+	*/
 }
 
 /*************************\
