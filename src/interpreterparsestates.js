@@ -254,7 +254,7 @@ const InterpreterStates = {
 			let v=Iterator[k],
 			    NewState = new EpoxyState(Body,State,{InLoop:true,IsLoop:true}),
 			    Gets=[k,v];
-			for(let Key of Variables){
+			for(let Key in Variables){
 				let Variable = Variables[Key];
 				NewState.NewVariable(Variable.Name,Gets[Getters[Key]]);
 			}
