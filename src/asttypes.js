@@ -257,7 +257,7 @@ const Expressions = [
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
 			let Node = this.NewNode("Object");
-			Node.Write("Object",this.IdentifierListInside(ProxyToken("BOPEN","Bracket"),ProxyToken("BCLOSE","Bracket"),{AllowDefault:true}));
+			Node.Write("Object",this.IdentifierListInside(ProxyToken("BOPEN","Bracket"),ProxyToken("BCLOSE","Bracket"),{AllowDefault:true,AllowExpression:true}));
 			return this.ASTExpression(Node,Priority);
 		},
 	},
