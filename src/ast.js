@@ -270,7 +270,7 @@ class ASTStack {
 					Identifier.Vararg=true;
 				}
 			}
-			if(Options.AllowExpression&&this.CheckNext("IOPEN","Bracket")){
+			if(Options.AllowExpression&&this.Check(this.Token,"IOPEN","Bracket")){
 				this.Next(2);
 				Identifier.Name = this.ParseExpression();
 				this.TestNext(this,"ICLOSE","Bracket");
