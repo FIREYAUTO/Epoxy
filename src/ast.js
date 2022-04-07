@@ -342,7 +342,7 @@ class ASTStack {
 				return;
 			}
 		}
-		let Result = this.ParseExpression(-1,[["COLON","Operator"],["DOT","Operator"],["POPEN","Bracket"],["ADD","Operator"],["SUB","Operator"],["MUL","Operator"],["DIV","Operator"],["MOD","Operator"],["POW","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
+		let Result = this.ParseExpression(-1,[["COLON","Operator"],["DOT","Operator"],["SELFCALL","Operator"],["POPEN","Bracket"],["ADD","Operator"],["SUB","Operator"],["MUL","Operator"],["DIV","Operator"],["MOD","Operator"],["POW","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
 		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",[this.GetFT({UseType:true,UseLiteral:true,Token:Token})]);
 		if(!(Result instanceof ASTBase)||!["Assignment","Call","SelfCall"].includes(Result.Type))ErrorHandler.ASTError(this,"Invalid",["syntax"]);
 		this.SkipLineEnd();
