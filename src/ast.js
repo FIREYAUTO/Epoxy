@@ -270,8 +270,15 @@ class ASTStack {
 					Identifier.Vararg=true;
 				}
 			}
-			this.TypeTest(this.Token,"Identifier");
-			Identifier.Name = this.Token.Name;
+			if(Options.AllowExpression&&this.CheckNext("IOPEN","Bracket")){
+				this.Next(2);
+				Identifier.Name = this.ParseExpression();
+				this.TestNext(this,"ICLOSE","Bracket");
+				this.Next();
+			}else{
+				this.TypeTest(this.Token,"Identifier");
+				Identifier.Name = this.Token.Name;
+			}
 			if(Options.AllowDefault){
 				if(this.CheckNext("COLON","Operator")){
 					this.Next(2);
