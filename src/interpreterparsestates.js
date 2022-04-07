@@ -194,7 +194,7 @@ const InterpreterStates = {
 		    Result = {};
 		for(let V of Obj)
 			if(V.Value===undefined)Result[V.Name]=State.GetVariable(V.Name);
-			else Result[V.Name]=await this.Parse(State,V.Value);
+			else Result[await this.Parse(State,V.Name)]=await this.Parse(State,V.Value);
 		return Result;
 	},
 	If:async function(State,Token){
