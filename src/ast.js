@@ -273,7 +273,7 @@ class ASTStack {
 			if(Options.AllowExpression&&this.Check(this.Token,"IOPEN","Bracket")){
 				this.Next(2);
 				Identifier.Name = this.ParseExpression();
-				this.TestNext(this,"ICLOSE","Bracket");
+				this.TestNext("ICLOSE","Bracket");
 				this.Next();
 			}else{
 				this.TypeTest(this.Token,"Identifier");
