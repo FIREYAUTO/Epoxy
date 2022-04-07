@@ -275,7 +275,7 @@ const Expressions = [
 	{
 		Name:"FUNCTION",
 		Type:"Keyword",
-		Call:function(){
+		Call:function(Priority,AllowList,Type){
 			let Node = this.NewNode("NewFastFunction");
 			this.Next();
 			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true,AllowVararg:true}));
