@@ -175,7 +175,7 @@ const InterpreterStates = {
 		let Obj = await this.Parse(State,Token.Read("Object")),
 		    Index = await this.Parse(State,Token.Read("Index")),
 		    Arguments = await this.ParseArray(State,Token.Read("Arguments")),
-		    Call = OperatorStates.index(Obj,Index);
+		    Call = await OperatorStates.index(State,Obj,Index);
 		if(!(Call instanceof Function))ErrorHandler.InterpreterError(Token,"Attempt",[`to call non-function ${Index}`]);
 		return await Call(this,State,Obj,...Arguments);
 	},
