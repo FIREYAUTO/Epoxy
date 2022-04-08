@@ -247,6 +247,7 @@ class ASTStack {
 	//{{ Identifier Parsing Methods }}\\
 	IdentifierList(Options,End){
 		let List = [];
+		this.ErrorIfEOS(" while parsing identifier list");
 		do{
 			let Identifier = {
 				Name:undefined,
