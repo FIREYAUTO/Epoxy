@@ -136,7 +136,7 @@ class ASTStack {
 			Current=this.Token;
 		if(!Next)return Expression.Value;
 		if(Next.is("LINEEND","Operator"))return Expression.Value;
-		if(Next.isType("Identifier")&&Current.isType("Identifier"))ErrorHandler.ASTError(this,"Unexpected",[`identifier while parsing ${Type}`]);
+		//if(Next.isType("Identifier")&&Current.isType("Identifier"))ErrorHandler.ASTError(this,"Unexpected",[`identifier while parsing ${Type}`]);
 		let Allowed=AllowList.length>0,
 			Passed=false;
 		if(Allowed){
