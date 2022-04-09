@@ -75,7 +75,7 @@ const InterpreterStates = {
 				let Obj = await this.Parse(State,Name.Read("Object")),
 					Index = await this.Parse(State,Name.Read("Index")),
 					ObjIndex = await OperatorStates.index(State,Obj,Index);
-				let Result = Call(State,ObjIndex,Value);
+				let Result = await Call(State,ObjIndex,Value);
 				await OperatorStates.setIndex(State,Obj,Index,Result);
 				return Result;
 			}
