@@ -216,6 +216,9 @@ class TokenizerStack {
 		}else if(Token.is("COMMENT","Operator")){
 			this.GetBetween(Stack,T=>T.Type==="Whitespace"&&T.LineBreak===true);
 			return;
+		}else if(Token.is("LONGCOMMENTOPEN","Operator")){
+			this.GetBetween(Stack,T=>T.is("LONGCOMMENTCLOSE","Operator"),true)
+			return;
 		}
 		return Token;
 	}
