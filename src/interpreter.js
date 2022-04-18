@@ -125,7 +125,8 @@ class InterpreterStack {
 			for(let Variable of GlobalVariables)NewState.TransferVariable(Variable);
 			await self.ParseState(NewState);
 			let Returns = NewState.Read("Returns");
-			if(Returns.length>1){
+			if(!Returns)return null;
+			if(&&Returns.length>1){
 				return new UnpackState(Returns);
 			}
 			if(Returns[0]===undefined)Returns[0]=null;
