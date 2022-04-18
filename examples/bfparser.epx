@@ -40,23 +40,23 @@ fn Parse(Tokens,Input:"")
 		Token: Tokens[Index]
 		if Token == "+" then
 			Update(1)
-		cls elseif Token == "-" then
+		elseif Token == "-" then
 			Update(-1)
-		cls elseif Token == ">" then
+		elseif Token == ">" then
 			Move(1)
-		cls elseif Token == "<" then
+		elseif Token == "<" then
 			Move(-1)
-		cls elseif Token == "[" then
+		elseif Token == "[" then
 			if Memory[MemoryIndex] != 0 then
 				array.append(Jumps,Index-1)
-			cls else
+			else
 				var Jump: 1
 				while Index < Length do
 					Index+: 1
 					Token: Tokens[Index]
 					if Token == "]" then
 						Jump-: 1
-					cls elseif Token == "[" then
+					elseif Token == "[" then
 						Jump+: 1
 					cls
 					if Jump == 0 then
@@ -64,15 +64,15 @@ fn Parse(Tokens,Input:"")
 					cls
 				cls 
 			cls
-		cls elseif Token == "]" then
+		elseif Token == "]" then
 			if Memory[MemoryIndex] != 0 then
 				Index: array.pop(Jumps)
-			cls else
+			else
 				array.pop(Jumps)
 			cls
-		cls elseif Token == "." then
+		elseif Token == "." then
 			log(Memory[MemoryIndex])
-		cls elseif Token == "," then
+		elseif Token == "," then
 			Memory[MemoryIndex]: string.char(string.subs(Input,InputIndex,1))||0;
 			InputIndex+: 1
 		cls
