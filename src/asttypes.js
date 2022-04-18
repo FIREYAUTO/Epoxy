@@ -83,10 +83,10 @@ const Chunks = [
 			let Block = undefined,
 			    self = this;
 			function OpenBlock(){
+				let NB = self.OpenChunk();
 				if(Block){
 					self.OpenChunks.pop();
 				}
-				let NB = self.OpenChunk();
 				Block=NB;
 				return NB;
 			}
@@ -116,7 +116,6 @@ const Chunks = [
 				this.ErrorIfEOS(" while parsing if statement");
 			}
 			Node.Write("Conditions",Conditions);
-			this.OpenChunks.pop();
 			this.Chunk=this.OpenChunks.pop();
 			/*
 			Node.Write("Body",this.ParseBlock(" while parsing if statement",ProxyToken("THEN","Keyword")));
