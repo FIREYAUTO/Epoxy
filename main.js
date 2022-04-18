@@ -18,11 +18,9 @@ async function Main(Code,Environment={}){
 		let AStack = AST.New(TStack);
 		await AStack.Parse();
 		let IStack = Interpreter.New(AStack,Environment);
+		Result.TStack=TStack,Result.AStack=AStack,Result.IStack=IStack;
 		await IStack.ParseState(IStack.MainState);
-		Result.Success = true,
-			Result.TStack=TStack,
-			Result.AStack=AStack,
-			Result.IStack=IStack;
+		Result.Success = true;
 	}catch(Error){
 		Result.Success=false,
 			Result.Error=Error;
