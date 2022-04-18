@@ -10,15 +10,15 @@ import {Interpreter} from "https://fireyauto.github.io/Epoxy/src/interpreter.js"
        Main Function
 \*************************/
 
-function Main(Code,Environment={}){
+async function Main(Code,Environment={}){
 	let Result = {Success:false};
 	try {
 		let TStack = Tokenizer.New(Code);
-		TStack.Parse();
+		await TStack.Parse();
 		let AStack = AST.New(TStack);
-		AStack.Parse();
+		await AStack.Parse();
 		let IStack = Interpreter.New(AStack,Environment);
-		IStack.ParseState(IStack.MainState);
+		await IStack.ParseState(IStack.MainState);
 		Result.Success = true,
 			Result.TStack=TStack,
 			Result.AStack=AStack,
