@@ -1,0 +1,29 @@
+fn class(a)
+	var b:a.init,
+		c:a.prototype||{},
+		d:fn(...e:[])
+			var f:{}
+			iter g,h as c do
+				f[g]:h
+			cls
+			b(f,...e)
+			return f
+		cls
+	return d
+cls
+
+-- Testing
+
+var square: class({
+	init: fn(self,side)
+		self.side:side
+	cls,
+	prototype: {
+		area: fn(self)
+			return self.side^2
+		cls,
+	}
+})
+
+var mySquare: square(4)
+log(mySquare>>area())
