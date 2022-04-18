@@ -132,7 +132,7 @@ const Chunks = [
 		Call:function(){
 			let Node = this.NewNode("Return");
 			this.Next();
-			if(this.Check(this.Token,"CLS","Keyword")){
+			if(this.Check(this.Token,"CLOSE","Keyword")){
 				Node.Write("Expression",null);
 				return Node;
 			}
