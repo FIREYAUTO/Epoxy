@@ -93,6 +93,8 @@ const RawTokens = [
 	new InternalToken("POW","^",Types[3]),
 	new InternalToken("DOT",".",Types[3]),
 	new InternalToken("COMMENT","--",Types[3]),
+	new InternalToken("LONGCOMMENTOPEN","--[[",Types[3]),
+	new InternalToken("LONGCOMMENTCLOSE","--]]",Types[3]),
 	new InternalToken("AND","&&",Types[3]),
 	new InternalToken("OR","||",Types[3]),
 	new InternalToken("NOT","!",Types[3]),
