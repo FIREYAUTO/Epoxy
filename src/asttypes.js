@@ -76,34 +76,17 @@ const Chunks = [
 			this.Next();
 			Node.Write("Expression",this.ParseExpression());
 			this.Next();
-			/*
-			ParseBlock(Type=" while parsing chunk",StartToken){
-		let Block=this.OpenChunk();
-		if(StartToken){
-			let Token=this.Token;
-			this.Test(Token,StartToken.Name,StartToken.Type);
-			this.Next();
-		}
-		this.ErrorIfEOS(Type);
-		while(!this.Token.is("CLOSE","Keyword")){
-			this.ParseChunk();
-			this.Next();
-			this.ErrorIfEOS(Type);
-		}
-		this.Chunk = this.OpenChunks.pop();
-		return Block;
-	}
-			*/
 			this.Test(this.Token,"THEN","Keyword");
 			this.Next();
 			this.ErrorIfEOS(" while parsing if statement");
 			let Conditions = [];
-			let Block = undefined;
+			let Block = undefined,
+			    self = this;
 			function OpenBlock(){
 				if(Block){
-					this.OpenChunks.pop();
+					self.OpenChunks.pop();
 				}
-				let NB = this.OpenChunk();
+				let NB = self.OpenChunk();
 				Block=NB;
 				return NB;
 			}
