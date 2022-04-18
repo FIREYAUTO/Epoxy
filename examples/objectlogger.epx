@@ -1,0 +1,23 @@
+fn TabGet(Tabs:0)
+	return string.repeat(string.byte(9),Tabs)
+cls
+
+fn Log(List,Cycle:[],Tabs:0)
+	if array.has(Cycle,List) then
+		return log(TabGet(Tabs)+"[Cyclic Reference]")
+	cls
+	var T: TabGet(Tabs)
+	array.append(Cycle,List)
+	iter k,v as List do
+		var t: type(v)
+		if t=="object" then
+			log(T+k+": {")
+			Log(v,Cycle,Tabs+1)
+			log(T+"},")
+		cls else
+			log(T+k+": "+v)
+		cls
+	cls
+cls
+
+Log(env)
