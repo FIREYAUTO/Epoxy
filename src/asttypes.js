@@ -37,6 +37,7 @@ const Chunks = [
 		Name:"DVAR",
 		Type:"Keyword",
 		Call:function(){
+			this.Next();
 			let Node = this.NewNode("NewDestructuringVariable");
 			let Variables = this.IdentifierList({Priority:-1,EType:"destructuring variable expression"});
 			Node.Write("Variables",Variables);
