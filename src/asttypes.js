@@ -34,6 +34,20 @@ const Chunks = [
 		},
 	},
 	{
+		Name:"DVAR",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("NewDestructuringVariable");
+			let Variables = this.IdentifierList({Priority:-1,EType:"destructuring variable expression"});
+			Node.Write("Variables",Variables);
+			if(this.CheckNext("COLON","Operator")){
+				this.Next(2);
+				Node.Write("Value",this.ParseExpression());
+			}
+			return Node;
+		},
+	},
+	{
 		Name:"ITERATE",
 		Type:"Keyword",
 		Call:function(){
