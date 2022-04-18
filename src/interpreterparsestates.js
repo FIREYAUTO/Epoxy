@@ -55,7 +55,6 @@ const InterpreterStates = {
 		for(let Variable of Variables)State.NewVariable(Variable.Name,await this.Parse(State,Variable.Value));
 	},
 	Assignment:async function(State,Token){
-		try{
 		let Name = Token.Read("Name"),
 			Value = await this.Parse(State,Token.Read("Value")),
 			Call = AssignmentStates[Token.Read("Type")];
@@ -82,9 +81,6 @@ const InterpreterStates = {
 			}
 		}else{
 			ErrorHandler.InterpreterError(Token,"Unexpected",["assignment operator"]);
-		}
-		}catch(e){
-			document.write(e.stack);	
 		}
 	},
 	Add:async function(State,Token){
