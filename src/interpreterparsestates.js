@@ -54,6 +54,15 @@ const InterpreterStates = {
 		let Variables = Token.Read("Variables");
 		for(let Variable of Variables)State.NewVariable(Variable.Name,await this.Parse(State,Variable.Value));
 	},
+	NewDestructuringVariable:async function(State,Token){
+		let Variables = Token.Read("Variables"),
+		    Value = await this.ParseExpression(State,Token.Read("Value"));
+		for(let Key in Variables){
+			Key=+Key;
+			let Variable=Variables[Key];
+			State.NewVariable(Variable.Name,Value[Key]);
+		}
+	},
 	Assignment:async function(State,Token){
 		let Name = Token.Read("Name"),
 			Value = await this.Parse(State,Token.Read("Value")),
