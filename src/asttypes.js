@@ -76,14 +76,72 @@ const Chunks = [
 			this.Next();
 			Node.Write("Expression",this.ParseExpression());
 			this.Next();
+			/*
+			ParseBlock(Type=" while parsing chunk",StartToken){
+		let Block=this.OpenChunk();
+		if(StartToken){
+			let Token=this.Token;
+			this.Test(Token,StartToken.Name,StartToken.Type);
+			this.Next();
+		}
+		this.ErrorIfEOS(Type);
+		while(!this.Token.is("CLOSE","Keyword")){
+			this.ParseChunk();
+			this.Next();
+			this.ErrorIfEOS(Type);
+		}
+		this.Chunk = this.OpenChunks.pop();
+		return Block;
+	}
+			*/
+			this.Test(this.Token,"THEN","Keyword");
+			this.Next();
+			this.ErrorIfEOS(" while parsing if statement");
+			let Conditions = [];
+			let Block = undefined;
+			function OpenBlock(){
+				if(Block){
+					this.OpenChunks.pop();
+				}
+				let NB = this.OpenChunk();
+				Block=NB;
+				return NB;
+			}
+			OpenBlock();
+			Node.Write("Body",Block);
+			while(!this.Token.is("CLOSE","Keyword")){
+				let Token = this.Token;
+				if(Token.is("ELSEIF","Keyword")){
+					OpenBlock();
+					this.Next();
+					let Condition = this.NewNode("ElseIf");
+					Condition.Write("Expression",this.ParseExpression());
+					this.TestNext("THEN","Keyword");
+					this.Next(2);
+					Condition.Write("Body",Block);
+					Conditions.push(Condition);
+				}else if(Token.is("ELSE","Keyword")){
+					OpenBlock();
+					this.Next();
+					let Condition = this.NewNode("Else");
+					Condition.Write("Body",Block);
+					Conditions.push(Condition);
+				}else{
+					this.ParseChunk();
+					this.Next();
+				}
+				this.ErrorIfEOS(" while parsing if statement");
+			}
+			Node.Write("Conditions",Conditions);
+			this.Chunk=this.OpenChunks.pop();
+			/*
 			Node.Write("Body",this.ParseBlock(" while parsing if statement",ProxyToken("THEN","Keyword")));
 			let Conditions = [];
 			while(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword")){
 				if(this.CheckNext("ELSEIF","Keyword")){
 					this.Next(2);
 					let Condition = this.NewNode("ElseIf");
-					Condition.Write("Expression",this.ParseExpression());
-					this.Next();
+					
 					Condition.Write("Body",this.ParseBlock(" while parsing elseif statement",ProxyToken("THEN","Keyword")));
 					Conditions.push(Condition);
 				}else if(this.CheckNext("ELSE","Keyword")){
@@ -95,6 +153,7 @@ const Chunks = [
 				}
 			}
 			Node.Write("Conditions",Conditions);
+			*/
 			return Node;
 		},
 	},
