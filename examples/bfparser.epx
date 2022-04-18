@@ -1,0 +1,92 @@
+-- BF Interpreter in Epoxy
+
+var ValidTokens: string.split("+-<>[],.")
+
+fn Tokenize(Code)
+	var Tokens: [],
+		Split: string.split(Code)
+	iter Key,Value as Split do
+		if array.has(ValidTokens,Value) then
+			array.append(Tokens,Value)
+		cls
+	cls
+	return Tokens
+cls
+
+fn Parse(Tokens,Input:"")
+	var Index: 0,
+		Token: Tokens[Index],
+		Length: #Tokens,
+		Memory: [],
+		MemoryIndex: 0,
+		Jumps: [],
+		InputIndex: 0
+	fn Check()
+		var IDX: Memory[MemoryIndex]
+		if !IDX && IDX != 0 then
+			Memory[MemoryIndex]: 0
+		cls
+	cls
+	fn Move(Amount)
+		MemoryIndex+: Amount
+		Check()
+	cls
+	fn Update(Amount)
+		Check()
+		Memory[MemoryIndex]+: Amount
+	cls
+	Check()
+	while Index < Length do
+		Token: Tokens[Index]
+		if Token == "+" then
+			Update(1)
+		cls elseif Token == "-" then
+			Update(-1)
+		cls elseif Token == ">" then
+			Move(1)
+		cls elseif Token == "<" then
+			Move(-1)
+		cls elseif Token == "[" then
+			if Memory[MemoryIndex] != 0 then
+				array.append(Jumps,Index-1)
+			cls else
+				var Jump: 1
+				while Index < Length do
+					Index+: 1
+					Token: Tokens[Index]
+					if Token == "]" then
+						Jump-: 1
+					cls elseif Token == "[" then
+						Jump+: 1
+					cls
+					if Jump == 0 then
+						break
+					cls
+				cls 
+			cls
+		cls elseif Token == "]" then
+			if Memory[MemoryIndex] != 0 then
+				Index: array.pop(Jumps)
+			cls else
+				array.pop(Jumps)
+			cls
+		cls elseif Token == "." then
+			log(Memory[MemoryIndex])
+		cls elseif Token == "," then
+			Memory[MemoryIndex]: string.char(string.subs(Input,InputIndex,1))||0;
+			InputIndex+: 1
+		cls
+		Index+: 1
+		Check()
+	cls
+cls
+
+fn RunBF(Code,Input)
+	var Tokens: Tokenize(Code)
+	Parse(Tokens,Input)
+cls
+
+RunBF("++++++++++[>+>+++>++++>+++++++>++++++++>+++++++++>++
+++++++++>+++++++++++>++++++++++++<<<<<<<<<-]>>>>+.>>>
+>+..<.<++++++++.>>>+.<<+.<<<<++++.<++.>>>+++++++.>>>.+++.
+<+++++++.--------.<<<<<+.<+++.---.")
