@@ -116,6 +116,7 @@ const Chunks = [
 				this.ErrorIfEOS(" while parsing if statement");
 			}
 			Node.Write("Conditions",Conditions);
+			this.OpenChunks.pop();
 			this.Chunk=this.OpenChunks.pop();
 			/*
 			Node.Write("Body",this.ParseBlock(" while parsing if statement",ProxyToken("THEN","Keyword")));
