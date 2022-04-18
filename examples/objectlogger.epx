@@ -14,7 +14,7 @@ fn Log(List,Cycle:[],Tabs:0)
 			log(T+k+": {")
 			Log(v,Cycle,Tabs+1)
 			log(T+"},")
-		cls else
+		else
 			log(T+k+": "+v)
 		cls
 	cls
