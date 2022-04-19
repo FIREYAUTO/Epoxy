@@ -43,7 +43,7 @@ const Chunks = [
 			Node.Write("Variables",Variables);
 			if(this.CheckNext("COLON","Operator")){
 				this.Next(2);
-				Node.Write("Value",this.ParseExpression());
+				Node.Write("Values",this.ExpressionList());
 			}
 			return Node;
 		},
