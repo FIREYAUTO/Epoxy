@@ -274,6 +274,8 @@ const Expressions = [
 				}else{
 					this.To(Index);	
 				}
+			}else{
+				this.To(Index);	
 			}
 			Node.Write("Name",this.Token.Literal);
 			return this.ASTExpression(Node,Priority);
