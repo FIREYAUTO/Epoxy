@@ -45,7 +45,9 @@ class InterpreterStack {
 		this.AStack=ASTStack,
 			this.Tokens=ASTStack.Result,
 			this.MainState=new EpoxyState(this.Tokens),
-			this.Environment=Environment;
+			this.Environment=Environment,
+			this.Ended=false,
+			this.EndedMessage="";
 		for(let Name in DefaultEnvironment)
 			if(!Object.prototype.hasOwnProperty.call(Environment,Name))
 				Environment[Name]=DefaultEnvironment[Name];
@@ -58,6 +60,7 @@ class InterpreterStack {
 		return new UnpackState(...Arguments);
 	}
 	async Parse(State,Token,Unpack=false){
+		this.HandleEnded();
 		if(!(Token instanceof ASTBase))return Token;
 		for(let Name in this.States){
 			let Call = this.States[Name];
@@ -70,10 +73,18 @@ class InterpreterStack {
 			}
 		}
 	}
+	HandleEnded(){
+		if(this.Ended)ErrorHandler.InterpreterError(this.MainState,"Halt",[this.EndedMessage]);	
+	}
+	Quit(Message){
+		this.Ended=true,
+			this.EndedMessage=Message;
+	}
 	async ParseState(State,Unpack=false,Proxy){
 		let S1=State,
 			S2=State;
 		if(Proxy)S1=Proxy;
+		this.HandleEnded();
 		while(!S1.IsEnd()){
 			let Result=await this.Parse(S2,S1.Token,Unpack);
 			S1.Next();
@@ -86,6 +97,7 @@ class InterpreterStack {
 				break;
 			}
 			if(S2.Read("Continue")===true)break;
+			this.HandleEnded();
 		}
 		S1.Close();
 	}
