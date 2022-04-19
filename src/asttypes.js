@@ -255,7 +255,7 @@ const Expressions = [
 				this.Next(2);
 				let Token = this.Token;
 				if(Token&&Token.Type==="Identifier"){
-					List.push(this.Token.Literal);
+					List.push(Token.Literal);
 				}else{
 					this.To(Index);
 					break;	
