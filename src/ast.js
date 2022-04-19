@@ -60,6 +60,12 @@ class ASTStack {
 		if(this.Token)this.Line=this.Token.Line,this.Index=this.Token.Index;	
 		return this.Token;
 	}
+	To(Position){
+		this.Position=Position;
+		this.Token=this.Tokens[this.Position];
+		if(this.Token)this.Line=this.Token.Line,this.Index=this.Token.Index;	
+		return this.Token;
+	}
 	IsEnd(){
 		return this.Position>=this.Tokens.length;
 	}
