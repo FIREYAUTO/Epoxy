@@ -1,0 +1,51 @@
+fn round(a,b)
+	var c: 10^b
+	return bit.lshift(a*c+0.5,0)/c
+cls
+
+string.format: fn(s,...a: [])
+	var p: string.split(s),
+		r: "",
+		l: #s,
+		sk: [],
+		id: 0
+	fn get_a()
+		var rs: a[id]
+		if id < #a-1 then
+			id+: 1
+		cls
+		return rs
+	cls
+	fn tosk(i)
+		array.append(sk,i)
+	cls
+	loop i:0;i<l;i+:1 do
+		if array.has(sk,i) then continue cls
+		var c: p[i]
+		if c == "%" then
+			tosk(i+1)
+			c: p[i+1]
+			var x: get_a()
+			if c == "s" then
+				r+: x
+			elseif c == "q" then
+				r+: '"'+x+'"'
+			elseif c == "a" then
+				r+: "'"+x+"'"
+			elseif c == "f" then
+				tosk(i+2)
+				r+: round(x,p[i+2])
+			elseif c == "i" then
+				r+: bit.lshift(x,0)
+			cls
+		else
+			r+: c
+		cls
+	cls
+	return r
+cls
+
+log(string.format("%i",3.1415))
+log(string.format("%f2",3.1415))
+log(string.format("%q %s","Hello","World"))
+log(string.format("%a %s","Hi","World"))
