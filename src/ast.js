@@ -254,6 +254,7 @@ class ASTStack {
 	IdentifierList(Options,End){
 		let List = [];
 		this.ErrorIfEOS(" while parsing identifier list");
+		this.Chunk.IdentifierList = true
 		do{
 			let Identifier = {
 				Name:undefined,
@@ -303,6 +304,7 @@ class ASTStack {
 			}
 			break;
 		}while(true);
+		delete this.Chunk.IdentifierList;
 		return List;
 	}
 	IdentifierListInside(Start,End,Options){
