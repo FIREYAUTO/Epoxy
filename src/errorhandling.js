@@ -10,6 +10,7 @@ const ErrorTypes = {
 	"Cannot":a=>`Cannot ${a}`,
 	"Invalid":a=>`Invalid ${a}`,
 	"Malformed":a=>`Malformed ${a}`,
+	"Halt":a=>`Script halted, ${a}`,
 };
 
 class EPXError extends Error{constructor(Name,Message){super(Message).name=Name}}
