@@ -91,11 +91,13 @@ const Chunks = [
 				return NB;
 			}
 			OpenBlock();
+			Block.Type="IfBlock";
 			Node.Write("Body",Block);
 			while(!this.Token.is("CLOSE","Keyword")){
 				let Token = this.Token;
 				if(Token.is("ELSEIF","Keyword")){
 					OpenBlock();
+					Block.Type="IfBlock";
 					this.Next();
 					let Condition = this.NewNode("ElseIf");
 					Condition.Write("Expression",this.ParseExpression());
@@ -105,6 +107,7 @@ const Chunks = [
 					Conditions.push(Condition);
 				}else if(Token.is("ELSE","Keyword")){
 					OpenBlock();
+					Block.Type="IfBlock";
 					this.Next();
 					let Condition = this.NewNode("Else");
 					Condition.Write("Body",Block);
@@ -188,11 +191,17 @@ const Chunks = [
 		Type:"Keyword",
 		Call:function(){
 			let Node = this.NewNode("Return");
-			this.Next();
-			if(this.Check(this.Token,"CLOSE","Keyword")){
+			if(this.Chunk&&this.Chunk.Type==="IfBlock"){
+				if(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword")){
+					Node.Write("Expression",null);
+					return Node;
+				}
+			}
+			if(this.CheckNext("CLOSE","Keyword")){
 				Node.Write("Expression",null);
 				return Node;
 			}
+			this.Next();
 			Node.Write("Expression",this.ExpressionList());
 			return Node;
 		},
