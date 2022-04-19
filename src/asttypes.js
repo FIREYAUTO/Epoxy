@@ -251,31 +251,33 @@ const Expressions = [
 		Call:function(Priority,AllowList,Type){
 			let Node = this.NewNode("GetVariable");
 			let List = [this.Token.Literal],Index = this.Position,Checkable = false;
-			while(this.CheckNext("COMMA","Operator")){
-				this.Next(2);
-				let Token = this.Token;
-				if(Token&&Token.Type==="Identifier"){
-					List.push(Token.Literal);
-				}else{
-					this.To(Index);
-					break;	
-				}
-				if(!this.CheckNext("COMMA","Operator")){
-					Checkable = true;	
-				}
-			}
-			if(Checkable){
-				if(this.CheckNext("COLON","Operator")){
+			if(!this.Chunk.IdentifierList){
+				while(this.CheckNext("COMMA","Operator")){
 					this.Next(2);
-					Node.Write("Names",List);
-					Node.Write("Values",this.ExpressionList());
-					Node.Type = "DestructuringAssignment";
-					return this.ASTExpression(Node,Priority);
+					let Token = this.Token;
+					if(Token&&Token.Type==="Identifier"){
+						List.push(Token.Literal);
+					}else{
+						this.To(Index);
+						break;	
+					}
+					if(!this.CheckNext("COMMA","Operator")){
+						Checkable = true;	
+					}
+				}
+				if(Checkable){
+					if(this.CheckNext("COLON","Operator")){
+						this.Next(2);
+						Node.Write("Names",List);
+						Node.Write("Values",this.ExpressionList());
+						Node.Type = "DestructuringAssignment";
+						return this.ASTExpression(Node,Priority);
+					}else{
+						this.To(Index);	
+					}
 				}else{
 					this.To(Index);	
 				}
-			}else{
-				this.To(Index);	
 			}
 			Node.Write("Name",this.Token.Literal);
 			return this.ASTExpression(Node,Priority);
