@@ -34,12 +34,11 @@ class EpoxyState {
 			},
 			this.Variables=[],
 			this.Children=[],
-			this.PermChildren=[],
 			this.Position=0,
 			this.Line=0,
 			this.Index=0;
 		for(let Name in Extra)this.Data[Name]=Extra[Name];
-		if(Parent&&Parent instanceof EpoxyState)Parent.Children.push(this),Parent.PermChildren.push(this);
+		if(Parent&&Parent instanceof EpoxyState)Parent.Children.push(this);
 		if(this.Token)this.Line=this.Token.Line,this.Index=this.Token.Index;
 		else if(this.Parent&&this.Parent.Token)this.Line=this.Parent.Token.Line,this.Index=this.Parent.Token.Index;
 	}
