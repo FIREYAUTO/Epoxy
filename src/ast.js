@@ -254,7 +254,7 @@ class ASTStack {
 	IdentifierList(Options,End){
 		let List = [];
 		this.ErrorIfEOS(" while parsing identifier list");
-		this.Chunk.IdentifierList = true
+		this.Chunk.IdentifierList = true;
 		do{
 			let Identifier = {
 				Name:undefined,
@@ -264,33 +264,45 @@ class ASTStack {
 				Pointer:undefined,
 				Vararg:false,
 			}
-			if(Options.AllowPointer){
-				this.Test(this.Token,"POPEN","Bracket");
-				this.Next();
-				this.TypeTest(this.Token,"Identifier");
-				Identifier.Pointer = this.Token.Name;
-				this.TestNext("PCLOSE","Bracket");
-				this.Next(2);
-			}
-			if(Options.AllowVararg){
-				if(this.Check(this.Token,"VARARG","Operator")){
-					this.Next();
-					Identifier.Vararg=true;
+			let Run = true;
+			if(Options.Modifiers&&Options.Modifiers.length>0){
+				for(let Modifier of Options.Modifiers){
+					if(Modifier.Check(this,Options,Identifier)){
+						Modifier.Call(this,Options,Identifier);
+						Run=false;
+						break;
+					}
 				}
 			}
-			if(Options.AllowExpression&&this.Check(this.Token,"IOPEN","Bracket")){
-				this.Next();
-				Identifier.Name = this.ParseExpression();
-				this.TestNext("ICLOSE","Bracket");
-				this.Next();
-			}else{
-				this.TypeTest(this.Token,"Identifier");
-				Identifier.Name = this.Token.Name;
-			}
-			if(Options.AllowDefault){
-				if(this.CheckNext("COLON","Operator")){
+			if(Run){
+				if(Options.AllowPointer){
+					this.Test(this.Token,"POPEN","Bracket");
+					this.Next();
+					this.TypeTest(this.Token,"Identifier");
+					Identifier.Pointer = this.Token.Name;
+					this.TestNext("PCLOSE","Bracket");
 					this.Next(2);
-					Identifier.Value = this.ParseExpression(Options.Priority,Options.AllowList,Options.Type,Options.EAllowList,Options.EType);
+				}
+				if(Options.AllowVararg){
+					if(this.Check(this.Token,"VARARG","Operator")){
+						this.Next();
+						Identifier.Vararg=true;
+					}
+				}
+				if(Options.AllowExpression&&this.Check(this.Token,"IOPEN","Bracket")){
+					this.Next();
+					Identifier.Name = this.ParseExpression();
+					this.TestNext("ICLOSE","Bracket");
+					this.Next();
+				}else{
+					this.TypeTest(this.Token,"Identifier");
+					Identifier.Name = this.Token.Name;
+				}
+				if(Options.AllowDefault){
+					if(this.CheckNext("COLON","Operator")){
+						this.Next(2);
+						Identifier.Value = this.ParseExpression(Options.Priority,Options.AllowList,Options.Type,Options.EAllowList,Options.EType);
+					}
 				}
 			}
 			List.push(Identifier);
@@ -340,6 +352,15 @@ class ASTStack {
 	}
 	SkipLineEnd(){
 		if(this.CheckNext("LINEEND","Operator"))this.Next();	
+	}
+	ParseRChunk(){
+		let Token=this.Token;
+		for(let Chunk of ASTChunks){
+			if(Token.is(Chunk.Name,Chunk.Type)){
+				let Result = Chunk.Call.bind(this)();
+				return Result;
+			}
+		}	
 	}
 	ParseChunk(){
 		let Token=this.Token;
