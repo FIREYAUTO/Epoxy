@@ -1,0 +1,40 @@
+--{{ Class Handler }}--
+
+fn NewClass(Properties)
+	var Init: Properties.init,
+		Prototype: Properties.prototype,
+		MakeClass
+	MakeClass: fn(...Arguments)
+		var New: {
+			__class: MakeClass
+		}
+		iter Key,Value as Prototype do
+			New[Key]: Value
+		cls
+		Init(New,...Arguments)
+		return New
+	cls
+	return MakeClass
+cls
+
+fn IsA(Object,Class)
+	return Object.__class == Class
+cls
+
+--{{ Testing }}--
+
+var Square: NewClass({
+	init: fn(self,Side)
+		self.Side: Side
+	cls,
+	prototype: {
+		Area: fn(self)
+			return self.Side ^ 2
+		cls,
+	},
+})
+
+var MySquare: Square(4)
+
+log(MySquare>>Area())
+log(IsA(MySquare,Square))
