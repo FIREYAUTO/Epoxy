@@ -22,16 +22,16 @@ var FakeNumber: {
 		return self.Number == Number
 	cls,
 	fn __lt(self,Number)
-		if type(self)=="number" then
-			return Number.Number < self
-		cls
 		return self.Number < Number
 	cls,
 	fn __leq(self,Number)
-		if type(self)=="number" then
-			return Number.Number <= self
-		cls
 		return self.Number <= Number
+	cls,
+	fn __gt(self,Number)
+		return self.Number > Number
+	cls,
+	fn __geq(self,Number)
+		return self.Number >= Number
 	cls,
 }
 
