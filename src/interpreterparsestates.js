@@ -103,14 +103,14 @@ const OperatorStates = {
 	},
 	gt:async(stk,s,a,b)=>{
 		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation >");
-		let m=await OperatorStateChecks.GetMethod(stk,s,a,"lt");
-		if(m)return await m(stk,s,b,a);
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"gt");
+		if(m)return await m(stk,s,a,b);
 		return a>b
 	},
 	geq:async(stk,s,a,b)=>{
 		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation >=");
-		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
-		if(m)return await m(stk,s,b,a);
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"geq");
+		if(m)return await m(stk,s,a,b);
 		return await OperatorStates.or(stk,s,await OperatorStates.gt(stk,s,a,b),await OperatorStates.eq(stk,s,a,b))
 	},
 	lt:async(stk,s,a,b)=>{
