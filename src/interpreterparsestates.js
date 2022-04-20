@@ -17,7 +17,7 @@ const OperatorStateChecks = {
 		return ty;
 	},
 	MultiTypeCheck:async(stk,s,a=[],t=[],ex="")=>{
-		for(let k in a)await this.TypeCheck(stk,s,a[k],t,`${ex} (argument ${k})`);
+		for(let k in a)await OperatorStateChecks.TypeCheck(stk,s,a[k],t,`${ex} (argument ${k})`);
 	},
 	GetMethod:async(stk,s,a,m)=>{
 		let t=await OperatorStates.type(stk,s,a);
