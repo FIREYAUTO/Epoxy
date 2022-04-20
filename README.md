@@ -20,16 +20,16 @@ var, fn, while, do, cls, loop, iter, of, as, in, true, false, null, return, dvar
 ## Prerequisites
 * You are expected to already know at least one programming language with a similar style to lua or javascript, otherwise the overview below will probably not make much sense.
 * Definition Keys:
-> `<Expression>`: An expression is anything ranging from identifiers to constants to anonymous functions to basic datatypes
-> `<Variable Name>`: An identifier which is not from the reserved keywords list listed above
-> `,...`: The previous definition can be repeated using a comma
-> `<Code>`: Any chunk of code
-> `<Variable Declaration>`: Variable declarations without using the `var` or `dvar` keywords
-> `<Condition>`: A determining expression which allows for loops or other things to run
-> `<Parameter>`: An identifier for function parameters
-> `<Variable>`: A conglomerate of variables or indexes
-> `<Text>`: A string of characters
-> `<Function Declaration>`: A basic function declaration
+> `<Expression>`: An expression is anything ranging from identifiers to constants to anonymous functions to basic datatypes<br>
+> `<Variable Name>`: An identifier which is not from the reserved keywords list listed above<br>
+> `,...`: The previous definition can be repeated using a comma<br>
+> `<Code>`: Any chunk of code<br>
+> `<Variable Declaration>`: Variable declarations without using the `var` or `dvar` keywords<br>
+> `<Condition>`: A determining expression which allows for loops or other things to run<br>
+> `<Parameter>`: An identifier for function parameters<br>
+> `<Variable>`: A conglomerate of variables or indexes<br>
+> `<Text>`: A string of characters<br>
+> `<Function Declaration>`: A basic function declaration<br>
 
 ***
 ## If Statements
