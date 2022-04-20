@@ -1,0 +1,8 @@
+var Object: {
+	Number: 2,
+	fn __add(self,Number)
+		return self.Number + Number
+	cls,
+}
+
+log(Object + 3)
