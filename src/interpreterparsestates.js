@@ -89,11 +89,11 @@ const OperatorStates = {
 		return false
 	},
 	and:async(stk,s,a,b)=>{
-		if(a===0)return b;
+		if(await OperatorStates.eq(stk,s,a,0))return b;
 		return a&&b
 	},
 	or:async(stk,s,a,b)=>{
-		if(a===0)return a;
+		if(await OperatorStates.eq(stk,s,a,0))return a;
 		return a||b
 	},
 	eq:async(stk,s,a,b)=>{
@@ -141,6 +141,9 @@ const OperatorStates = {
 		if(type==="object"&&a instanceof Array)return"array";
 		if(a===undefined||a===null)return"null";
 		return type;
+	},
+	if:async(stk,s,a)=>{
+		return !(a===false||a===null||a===undefined);	
 	},
 };
 
@@ -263,14 +266,14 @@ const InterpreterStates = {
 	},
 	And:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
-		if(V1){
+		if(await OperatorStates.if(this,State,V1)){
 			let V2 = await this.Parse(State,Token.Read("V2"));
 			return await OperatorStates.and(this,State,V1,V2);
 		}else return V1;
 	},
 	Or:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
-		if(!V1){
+		if(!await OperatorStates.if(this,State,V1)){
 			let V2 = await this.Parse(State,Token.Read("V2"));
 			return await OperatorStates.or(this,State,V1,V2);
 		}else return V1;
@@ -341,7 +344,7 @@ const InterpreterStates = {
 		let Expression = await this.Parse(State,Token.Read("Expression")),
 		    Conditions = Token.Read("Conditions"),
 		    Body = Token.Read("Body");
-		if(Expression){
+		if(await OperatorStates.if(this,State,Expression)){
 			let NewState = new EpoxyState(Body,State);
 			await this.ParseState(NewState);
 		}else{
@@ -349,7 +352,7 @@ const InterpreterStates = {
 				if(Condition.Type === "ElseIf"){
 					let Exp = await this.Parse(State,Condition.Read("Expression")),
 					    Bd = Condition.Read("Body");
-					if(Exp){
+					if(await OperatorStates.if(this,State,Exp)){
 						let NewState = new EpoxyState(Bd,State);
 						await this.ParseState(NewState);
 						break;
@@ -366,7 +369,7 @@ const InterpreterStates = {
 	While:async function(State,Token){
 		let Expression = Token.Read("Condition"),
 			Body = Token.Read("Body");
-		while(await this.Parse(State,Expression)){
+		while(await OperatorStates.if(this,State,await this.Parse(State,Expression))){
 			let NewState = new EpoxyState(Body,State,{InLoop:true,IsLoop:true});
 			await this.ParseState(NewState);
 			if(!NewState.Read("InLoop"))break;
@@ -379,7 +382,7 @@ const InterpreterStates = {
 			Increment = Token.Read("Increment");
 		let ProxyState = new EpoxyState({Data:[],Line:Token.Line,Index:Token.Index},State);
 		for(let Variable of Variables)ProxyState.NewVariable(Variable.Name,await this.Parse(ProxyState,Variable.Value));
-		while(await this.Parse(ProxyState,Expression)){
+		while(await OperatorStates.if(this,State,await this.Parse(ProxyState,Expression))){
 			let NewState = new EpoxyState(Body,ProxyState,{InLoop:true,IsLoop:true});
 			await this.ParseState(NewState);
 			if(!NewState.Read("InLoop"))break;
