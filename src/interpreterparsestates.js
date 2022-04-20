@@ -84,7 +84,7 @@ const OperatorStates = {
 		return -a
 	},
 	not:async(stk,s,a)=>{
-		let t=await this.type(stk,s,a);
+		let t=await OperatorStates.type(stk,s,a);
 		if(t==="boolean"||t==="null")return !a;
 		return false
 	},
@@ -111,7 +111,7 @@ const OperatorStates = {
 		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation >=");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
 		if(m)return await m(stk,s,b,a);
-		return await this.and(stk,s,await this.gt(stk,s,a,b),await this.eq(stk,s,a,b))
+		return await OperatorStates.and(stk,s,await OperatorStates.gt(stk,s,a,b),await OperatorStates.eq(stk,s,a,b))
 	},
 	lt:async(stk,s,a,b)=>{
 		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation <");
@@ -123,12 +123,12 @@ const OperatorStates = {
 		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation <=");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
 		if(m)return await m(stk,s,a,b);
-		return await this.and(stk,s,await this.lt(stk,s,a,b),await this.eq(stk,s,a,b))
+		return await OperatorStates.and(stk,s,await OperatorStates.lt(stk,s,a,b),await OperatorStates.eq(stk,s,a,b))
 	},
 	neq:async(stk,s,a,b)=>{
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"eq");
-		if(m)return await this.not(stk,s,await m(stk,s,a,b));
-		return await this.not(stk,s,await this.eq(stk,s,a,b));
+		if(m)return await OperatorStates.not(stk,s,await m(stk,s,a,b));
+		return await OperatorStates.not(stk,s,await OperatorStates.eq(stk,s,a,b));
 	},
 	len:async(stk,s,a)=>{
 		await OperatorStateChecks.TypeCheck(stk,s,a,["array","string","object"]," while doing the length operation");
