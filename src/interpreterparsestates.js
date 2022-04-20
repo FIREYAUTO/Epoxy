@@ -97,20 +97,45 @@ const OperatorStates = {
 		return a||b
 	},
 	eq:async(stk,s,a,b)=>{
-		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the unm operation");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"eq");
 		if(m)return await m(stk,s,a,b);
 		return a===b
 	},
 	gt:async(stk,s,a,b)=>{
-		
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator >");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"lt");
+		if(m)return await m(stk,s,b,a);
 		return a>b
 	},
-	geq:async(stk,s,a,b)=>a>=b,
-	lt:async(stk,s,a,b)=>a<b,
-	leq:async(stk,s,a,b)=>a<=b,
-	neq:async(stk,s,a,b)=>a!=b,
-	len:async(stk,s,a)=>a.length,
+	geq:async(stk,s,a,b)=>{
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator >=");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
+		if(m)return await m(stk,s,b,a);
+		return await this.and(stk,s,await this.gt(stk,s,a,b),await this.eq(stk,s,a,b))
+	},
+	lt:async(stk,s,a,b)=>{
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator <");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"lt");
+		if(m)return await m(stk,s,a,b);
+		return a<b
+	},
+	leq:async(stk,s,a,b)=>{
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator <=");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
+		if(m)return await m(stk,s,a,b);
+		return await this.and(stk,s,await this.lt(stk,s,a,b),await this.eq(stk,s,a,b))
+	},
+	neq:async(stk,s,a,b)=>{
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"eq");
+		if(m)return await this.not(stk,s,await m(stk,s,a,b));
+		return await this.not(stk,s,await this.eq(stk,s,a,b));
+	},
+	len:async(stk,s,a)=>{
+		await OperatorStateChecks.TypeCheck(stk,s,a,["array","string","object"]," while doing the length operation");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"len");
+		if(m)return await m(stk,s,a);
+		return a.length
+	},
 	type:async(stk,s,a)=>{
 		let type=typeof a;
 		if(type==="object"&&a instanceof Array)return"array";
