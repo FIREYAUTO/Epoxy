@@ -117,9 +117,10 @@ class InterpreterStack {
 		    GlobalVariables=State.GetGlobalVariables(),
 		    self=this,
 		    Body=Token.Read("Body");
-		return async function(Stack,CState,...Arguments){
+		const Callback = async function(Stack,CState,...Arguments){
 			let NewState=new EpoxyState(Body,State,{IsFunction:true}),
 			    Stop=false;
+			NewState.NewVariable("this",Callback);
 			for(let Key in Parameters){
 				let Parameter = Parameters[Key],
 				    Argument = Arguments[Key];
@@ -144,6 +145,7 @@ class InterpreterStack {
 			if(Returns[0]===undefined)Returns[0]=null;
 			return Returns[0];
 		}
+		return Callback;
 	}
 	/*
 	
