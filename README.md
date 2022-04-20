@@ -17,12 +17,27 @@ var, fn, while, do, cls, loop, iter, of, as, in, true, false, null, return, dvar
 ***
 # Syntax Overview
 
+## Prerequisites
+* You are expected to already know at least one programming language with a similar style to lua or javascript, otherwise the overview below will probably not make much sense.
+* Definition Keys:
+> `<Expression>`: An expression is anything ranging from identifiers to constants to anonymous functions to basic datatypes
+> `<Variable Name>`: An identifier which is not from the reserved keywords list listed above
+> `,...`: The previous definition can be repeated using a comma
+> `<Code>`: Any chunk of code
+> `<Variable Declaration>`: Variable declarations without using the `var` or `dvar` keywords
+> `<Condition>`: A determining expression which allows for loops or other things to run
+> `<Parameter>`: An identifier for function parameters
+> `<Variable>`: A conglomerate of variables or indexes
+> `<Text>`: A string of characters
+> `<Function Declaration>`: A basic function declaration
+
+***
 ## If Statements
 
 ```
-if <Expression> then
+if <Condition> then
 	<Code>
-elseif <Expression> then
+elseif <Condition> then
 	<Code>
 else
 	<Code>
@@ -50,7 +65,7 @@ cls
 ### While
 
 ```
-while <Expression> do
+while <Condition> do
 	<Code>
 cls
 ```
@@ -146,6 +161,13 @@ continue
 
 ```
 # <Expression> --Length Operator
+```
+
+### Indexing Operators
+
+```
+<Expression>.<Identifier>: <Expression>
+<Expression>[<Expression>]: <Expression>
 ```
 ***
 ## Data Types
