@@ -10,36 +10,123 @@ import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/as
       Internal States
 \*************************/
 
+const OperatorStateChecks = {
+	TypeCheck:async(stk,s,a,t=[],ex="")=>{
+		let ty=await OperatorStates.type(stk,s,a);
+		if(!t.includes(ty))ErrorHandler.InterpreterError(s,"ExpectedGot",[`types ${t.join(", ")}`,`type ${ty}${ex}`]);
+		return ty;
+	},
+	MultiTypeCheck:async(stk,s,a=[],t=[],ex="")=>{
+		for(let k in a)await this.TypeCheck(stk,s,a[k],t,`${ex} (argument ${k})`);
+	},
+	GetMethod:async(stk,s,a,m)=>{
+		let t=await OperatorStates.type(stk,s,a);
+		if(t!="object")return;
+		return a["__"+m];
+	},
+};
+
+const OperatorSettings = {
+	MathTypes:["string","number","object"],	
+}
+
 const OperatorStates = {
-	add:(s,a,b)=>a+b,
-	sub:(s,a,b)=>a-b,
-	mul:(s,a,b)=>a*b,
-	div:(s,a,b)=>a/b,
-	mod:(s,a,b)=>a%b,
-	pow:(s,a,b)=>a**b,
-	index:(s,a,b)=>a[b],
-	setIndex:(s,a,b,c)=>a[b]=c,
-	unm:(s,a)=>-a,
-	not:(s,a)=>!a,
-	and:(s,a,b)=>a&&b,
-	or:(s,a,b)=>a||b,
-	eq:(s,a,b)=>a===b,
-	gt:(s,a,b)=>a>b,
-	geq:(s,a,b)=>a>=b,
-	lt:(s,a,b)=>a<b,
-	leq:(s,a,b)=>a<=b,
-	neq:(s,a,b)=>a!=b,
-	len:(s,a)=>a.length,
+	add:async(stk,s,a,b)=>{
+		await OperatorStateChecks.MultiTypeCheck(stk,s,[a,b],OperatorSettings.MathTypes," while doing math operation +");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"add");
+		if(m)return await m(stk,s,a,b);
+		return a+b
+	},
+	sub:async(stk,s,a,b)=>{
+		await OperatorStateChecks.MultiTypeCheck(stk,s,[a,b],OperatorSettings.MathTypes," while doing math operation -");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"sub");
+		if(m)return await m(stk,s,a,b);
+		return a-b
+	},
+	mul:async(stk,s,a,b)=>{
+		await OperatorStateChecks.MultiTypeCheck(stk,s,[a,b],OperatorSettings.MathTypes," while doing math operation *");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"mul");
+		if(m)return await m(stk,s,a,b);
+		return a*b
+	},
+	div:async(stk,s,a,b)=>{
+		await OperatorStateChecks.MultiTypeCheck(stk,s,[a,b],OperatorSettings.MathTypes," while doing math operation /");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"div");
+		if(m)return await m(stk,s,a,b);
+		return a/b
+	},
+	mod:async(stk,s,a,b)=>{
+		await OperatorStateChecks.MultiTypeCheck(stk,s,[a,b],OperatorSettings.MathTypes," while doing math operation %");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"mod");
+		if(m)return await m(stk,s,a,b);
+		return a%b
+	},
+	pow:async(stk,s,a,b)=>{
+		await OperatorStateChecks.MultiTypeCheck(stk,s,[a,b],OperatorSettings.MathTypes," while doing math operation ^");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"pow");
+		if(m)return await m(stk,s,a,b);
+		return a**b
+	},
+	index:async(stk,s,a,b)=>{
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"index");
+		if(m&&!Object.prototype.hasOwnProperty.call(a,b))return await m(stk,s,a,b);
+		return a[b]
+	},
+	setIndex:async(stk,s,a,b,c)=>{
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"newindex");
+		if(m&&!Object.prototype.hasOwnProperty.call(a,b))return await m(stk,s,a,b,c);
+		return a[b]=c
+	},
+	unm:async(stk,s,a)=>{
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the unm operation");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"unm");
+		if(m)return await m(stk,s,a);
+		return -a
+	},
+	not:async(stk,s,a)=>{
+		let t=await this.type(stk,s,a);
+		if(t==="boolean"||t==="null")return !a;
+		return false
+	},
+	and:async(stk,s,a,b)=>{
+		if(a===0)return b;
+		return a&&b
+	},
+	or:async(stk,s,a,b)=>{
+		if(a===0)return a;
+		return a||b
+	},
+	eq:async(stk,s,a,b)=>{
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the unm operation");
+		let m=await OperatorStateChecks.GetMethod(stk,s,a,"eq");
+		if(m)return await m(stk,s,a,b);
+		return a===b
+	},
+	gt:async(stk,s,a,b)=>{
+		
+		return a>b
+	},
+	geq:async(stk,s,a,b)=>a>=b,
+	lt:async(stk,s,a,b)=>a<b,
+	leq:async(stk,s,a,b)=>a<=b,
+	neq:async(stk,s,a,b)=>a!=b,
+	len:async(stk,s,a)=>a.length,
+	type:async(stk,s,a)=>{
+		let type=typeof a;
+		if(type==="object"&&a instanceof Array)return"array";
+		if(a===undefined||a===null)return"null";
+		return type;
+	},
 };
 
 const AssignmentStates = {
-	0:(s,a,b)=>b,
-	1:(s,a,b)=>OperatorStates.add(s,a,b),
-	2:(s,a,b)=>OperatorStates.sub(s,a,b),
-	3:(s,a,b)=>OperatorStates.mul(s,a,b),
-	4:(s,a,b)=>OperatorStates.div(s,a,b),
-	5:(s,a,b)=>OperatorStates.mod(s,a,b),
-	6:(s,a,b)=>OperatorStates.pow(s,a,b),
+	0:async(stk,s,a,b)=>await b,
+	1:async(stk,s,a,b)=>await OperatorStates.add(stk,s,a,b),
+	2:async(stk,s,a,b)=>await OperatorStates.sub(stk,s,a,b),
+	3:async(stk,s,a,b)=>await OperatorStates.mul(stk,s,a,b),
+	4:async(stk,s,a,b)=>await OperatorStates.div(stk,s,a,b),
+	5:async(stk,s,a,b)=>await OperatorStates.mod(stk,s,a,b),
+	6:async(stk,s,a,b)=>await OperatorStates.pow(stk,s,a,b),
 }
 
 /*************************\
@@ -92,19 +179,19 @@ const InterpreterStates = {
 				let Variable=State.GetGlobalRawVariable(Name);
 				if(Variable){
 					let Previous=Variable.Value;
-					State.SetVariable(Name,await Call(State,Variable.Value,Value));
+					State.SetVariable(Name,await Call(this,State,Variable.Value,Value));
 					return Variable.Value;
 				}else{
-					let Result=await Call(State,null,Value);
+					let Result=await Call(this,State,null,Value);
 					State.SetVariable(Name,Result);
 					return Result;
 				}
 			}else if(Name.Type==="GetIndex"){
 				let Obj = await this.Parse(State,Name.Read("Object")),
 					Index = await this.Parse(State,Name.Read("Index")),
-					ObjIndex = await OperatorStates.index(State,Obj,Index);
-				let Result = await Call(State,ObjIndex,Value);
-				await OperatorStates.setIndex(State,Obj,Index,Result);
+					ObjIndex = await OperatorStates.index(this,State,Obj,Index);
+				let Result = await Call(this,State,ObjIndex,Value);
+				await OperatorStates.setIndex(this,State,Obj,Index,Result);
 				return Result;
 			}
 		}else{
@@ -114,84 +201,84 @@ const InterpreterStates = {
 	Add:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.add(State,V1,V2);
+		return await OperatorStates.add(this,State,V1,V2);
 	},
 	Sub:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.sub(State,V1,V2);
+		return await OperatorStates.sub(this,State,V1,V2);
 	},
 	Mul:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.mul(State,V1,V2);
+		return await OperatorStates.mul(this,State,V1,V2);
 	},
 	Div:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.div(State,V1,V2);
+		return OperatorStates.div(this,State,V1,V2);
 	},
 	Mod:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.mod(State,V1,V2);
+		return await OperatorStates.mod(this,State,V1,V2);
 	},
 	Pow:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.pow(State,V1,V2);
+		return await OperatorStates.pow(this,State,V1,V2);
 	},
 	Negative:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
-		return OperatorStates.unm(State,V1);
+		return await OperatorStates.unm(this,State,V1);
 	},
 	Not:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
-		return OperatorStates.not(State,V1);
+		return await OperatorStates.not(this,State,V1);
 	},
 	And:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
 		if(V1){
 			let V2 = await this.Parse(State,Token.Read("V2"));
-			return OperatorStates.and(State,V1,V2);
+			return await OperatorStates.and(this,State,V1,V2);
 		}else return V1;
 	},
 	Or:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
 		if(!V1){
 			let V2 = await this.Parse(State,Token.Read("V2"));
-			return OperatorStates.or(State,V1,V2);
+			return await OperatorStates.or(this,State,V1,V2);
 		}else return V1;
 	},
 	Eq:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.eq(State,V1,V2);
+		return await OperatorStates.eq(this,State,V1,V2);
 	},
 	Lt:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.lt(State,V1,V2);
+		return await OperatorStates.lt(this,State,V1,V2);
 	},
 	Leq:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.leq(State,V1,V2);
+		return await OperatorStates.leq(this,State,V1,V2);
 	},
 	Gt:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.gt(State,V1,V2);
+		return await OperatorStates.gt(this,State,V1,V2);
 	},
 	Geq:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.geq(State,V1,V2);
+		return await OperatorStates.geq(this,State,V1,V2);
 	},
 	Neq:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1")),
 			V2 = await this.Parse(State,Token.Read("V2"));
-		return OperatorStates.neq(State,V1,V2);
+		return await OperatorStates.neq(this,State,V1,V2);
 	},
 	Call:async function(State,Token){
 		let Call = await this.Parse(State,Token.Read("Call")),
@@ -203,7 +290,7 @@ const InterpreterStates = {
 		let Obj = await this.Parse(State,Token.Read("Object")),
 		    Index = await this.Parse(State,Token.Read("Index")),
 		    Arguments = await this.ParseArray(State,Token.Read("Arguments")),
-		    Call = await OperatorStates.index(State,Obj,Index);
+		    Call = await OperatorStates.index(this,State,Obj,Index);
 		if(!(Call instanceof Function))ErrorHandler.InterpreterError(Token,"Attempt",[`to call non-function ${Index}`]);
 		return await Call(this,State,Obj,...Arguments);
 	},
@@ -312,11 +399,11 @@ const InterpreterStates = {
 	GetIndex:async function(State,Token){
 		let Obj = await this.Parse(State,Token.Read("Object")),
 		    Index = await this.Parse(State,Token.Read("Index"));
-		return await OperatorStates.index(State,Obj,Index);
+		return await OperatorStates.index(this,State,Obj,Index);
 	},
 	Length:async function(State,Token){
 		let V1 = await this.Parse(State,Token.Read("V1"));
-		return await OperatorStates.len(State,V1);
+		return await OperatorStates.len(this,State,V1);
 	},
 	/*
 	*/
