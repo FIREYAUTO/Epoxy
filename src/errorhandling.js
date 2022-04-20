@@ -5,6 +5,7 @@
 const ErrorTypes = {
 	"ExpectedGot":(a,b)=>`Expected ${a}, got ${b} instead`,
 	"Expected":a=>`Expected ${a}`,
+	"ExpectedGotStop":(a,b)=>`Expected ${a}, got ${b}`,
 	"Unexpected":a=>`Unexpected ${a}`,
 	"Attempt":a=>`Attempt to ${a}`,
 	"Cannot":a=>`Cannot ${a}`,
