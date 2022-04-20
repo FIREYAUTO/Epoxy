@@ -352,7 +352,21 @@ const Expressions = [
 		Stop:false,
 		Call:function(Priority,AllowList,Type){
 			let Node = this.NewNode("Object");
-			Node.Write("Object",this.IdentifierListInside(ProxyToken("BOPEN","Bracket"),ProxyToken("BCLOSE","Bracket"),{AllowDefault:true,AllowExpression:true}));
+			Node.Write("Object",this.IdentifierListInside(ProxyToken("BOPEN","Bracket"),ProxyToken("BCLOSE","Bracket"),{
+				AllowDefault:true,
+				AllowExpression:true,
+				Modifiers:[
+					{
+						Check:(self,Options,Identifier)=>self.Token.is("FUNCTION","Keyword"),
+						Call:(self,Options,Identifier)=>{
+							let Result = self.ParseRChunk();
+							Identifier.Name = Result.Read("Name"),
+								Identifier.Value = Result,
+								Result.Type = "NewFastFunction";
+						},
+					},
+				],
+			}));
 			return this.ASTExpression(Node,Priority);
 		},
 	},
