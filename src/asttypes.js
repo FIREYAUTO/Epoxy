@@ -355,6 +355,7 @@ const Expressions = [
 			Node.Write("Object",this.IdentifierListInside(ProxyToken("BOPEN","Bracket"),ProxyToken("BCLOSE","Bracket"),{
 				AllowDefault:true,
 				AllowExpression:true,
+				AllowKeywords:true,
 				Modifiers:[
 					{
 						Check:(self,Options,Identifier)=>self.Token.is("FUNCTION","Keyword"),
