@@ -295,8 +295,17 @@ class ASTStack {
 					this.TestNext("ICLOSE","Bracket");
 					this.Next();
 				}else{
-					this.TypeTest(this.Token,"Identifier");
-					Identifier.Name = this.Token.Name;
+					let WasKeyword=false;
+					if(Options.AllowKeywords){
+						if(this.Token.Type==="Keyword"){
+							Identifier.Name = this.Token.Literal;
+							WasKeyword=true;
+						}
+					}
+					if(!WasKeyword){
+						this.TypeTest(this.Token,"Identifier");
+						Identifier.Name = this.Token.Name;
+					}
 				}
 				if(Options.AllowDefault){
 					if(this.CheckNext("COLON","Operator")){
