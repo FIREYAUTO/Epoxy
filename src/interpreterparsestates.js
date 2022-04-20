@@ -13,7 +13,7 @@ import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/as
 const OperatorStateChecks = {
 	TypeCheck:async(stk,s,a,t=[],ex="")=>{
 		let ty=await OperatorStates.type(stk,s,a);
-		if(!t.includes(ty))ErrorHandler.InterpreterError(s,"ExpectedGot",[`types ${t.join(", ")}`,`type ${ty}${ex}`]);
+		if(!t.includes(ty))ErrorHandler.InterpreterError(s,"ExpectedGotStop",[`types ${t.join(", ")}`,`type ${ty}${ex}`]);
 		return ty;
 	},
 	MultiTypeCheck:async(stk,s,a=[],t=[],ex="")=>{
@@ -102,25 +102,25 @@ const OperatorStates = {
 		return a===b
 	},
 	gt:async(stk,s,a,b)=>{
-		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator >");
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation >");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"lt");
 		if(m)return await m(stk,s,b,a);
 		return a>b
 	},
 	geq:async(stk,s,a,b)=>{
-		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator >=");
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation >=");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
 		if(m)return await m(stk,s,b,a);
 		return await this.and(stk,s,await this.gt(stk,s,a,b),await this.eq(stk,s,a,b))
 	},
 	lt:async(stk,s,a,b)=>{
-		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator <");
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation <");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"lt");
 		if(m)return await m(stk,s,a,b);
 		return a<b
 	},
 	leq:async(stk,s,a,b)=>{
-		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operator <=");
+		await OperatorStateChecks.TypeCheck(stk,s,a,["number","object"]," while doing the logical operation <=");
 		let m=await OperatorStateChecks.GetMethod(stk,s,a,"leq");
 		if(m)return await m(stk,s,a,b);
 		return await this.and(stk,s,await this.lt(stk,s,a,b),await this.eq(stk,s,a,b))
