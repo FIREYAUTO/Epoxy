@@ -11,11 +11,11 @@ fn Log(List,Cycle:[],Tabs:0)
 	iter k,v as List do
 		var t: type(v)
 		if t=="object" then
-			log(T+k+": {")
+			log(T+tostring(k)+": {")
 			Log(v,Cycle,Tabs+1)
 			log(T+"},")
 		else
-			log(T+k+": "+v)
+			log(T+tostring(k)+": "+tostring(v))
 		cls
 	cls
 cls
