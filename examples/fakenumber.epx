@@ -1,0 +1,49 @@
+var FakeNumber: {
+	Number: 1,
+	fn __add(self,Number)
+		return self.Number + Number
+	cls,
+	fn __sub(self,Number)
+		return self.Number - Number
+	cls,
+	fn __mul(self,Number)
+		return self.Number * Number
+	cls,
+	fn __div(self,Number)
+		return self.Number / Number
+	cls,
+	fn __mod(self,Number)
+		return self.Number % Number
+	cls,
+	fn __pow(self,Number)
+		return self.Number ^ Number
+	cls,
+	fn __eq(self,Number)
+		return self.Number == Number
+	cls,
+	fn __lt(self,Number)
+		if type(self)=="number" then
+			return Number.Number < self
+		cls
+		return self.Number < Number
+	cls,
+	fn __leq(self,Number)
+		if type(self)=="number" then
+			return Number.Number <= self
+		cls
+		return self.Number <= Number
+	cls,
+}
+
+log(FakeNumber + 1)
+log(FakeNumber - 1)
+log(FakeNumber * 1)
+log(FakeNumber / 1)
+log(FakeNumber % 1)
+log(FakeNumber ^ 1)
+log(FakeNumber == 1)
+log(FakeNumber != 1)
+log(FakeNumber < 1)
+log(FakeNumber <= 1)
+log(FakeNumber > 1)
+log(FakeNumber >= 1)
