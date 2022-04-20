@@ -1,0 +1,23 @@
+--[[
+This script calculates binary strings and also calculates their next binary string using the current binary string
+
+Example:
+
+0001 --1
+0010 --2
+
+0010 --2
+0011 --3
+
+0011 --3
+0100 --4
+--]]
+
+fn bin(a,b:true)var c:""while a>0 do c,a:tostring(a%2)+c,bit.rshift(a,1)cls if b then c:string.repeat("0",16-#c)+c cls return c cls fn cbin(a)var b:string.split(string.reverse(tostring(a))),c:[],d:0,e:#b,f:b[0],g:true fn h()return d>=e cls fn i(j:1)d+:j f:b[d]return f cls fn k(l)c[d]:l cls while !h()do if f=="1"then if g then while f=="1"do k("0")i()cls k("1")g:false else k("1")cls elseif f=="0"then var m:"0"if g then g,m:false,"1"cls k(m)cls i()cls return string.reverse(array.join(c))cls
+
+loop i:0;i<=30;i+:1 do
+	var b:bin(i)
+	log(b)
+	log(cbin(b))
+	log(" ")
+cls
