@@ -27,8 +27,10 @@ class Thread {
 			Hidden.Resolve=Stk;
 		}
 		this.Yield = function(Stk,St){
+			if(Hidden.Yield===true)return null;
 			if(Stk===Stack&&St===State)return null;
 			Hidden.Yield=true;
+			return true;
 		}
 		this.Resume = function(Stk,St,...Arguments){
 			if(!Hidden.Yield)return null;
