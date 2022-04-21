@@ -229,3 +229,114 @@ true, false, null
 Text
 --]]
 ```
+***
+# Standard Library Overview
+
+## Functions
+
+### log
+`log(...Arguments)` This function will log the given arguments to the console
+### warn
+`warn(...Arguments)` This function will log the given arguments to the console using a warning color
+### error
+`error(...Arguments)` This function will error with the provided arguments, halting the completion of the current thread
+### type
+`type(Argument)` This function will return the type of the given argument
+### wait
+`wait(Time)` This function will wait the given time in seconds
+### time
+`time()` This function will return the number of seconds since the Unix Epoch
+### getenv
+`log(Trace)` This function will return an environment object of the stack `Trace` stacks up
+### async
+`async(Call,...Arguments)` This function will call the given function in a new thread with the provided arguments
+### tostring
+`tostring(Argument)` This function will return the given argument as a string
+### tofloat
+`tofloat(...Arguments)` This function will return the given argument as a float
+### toint
+`toint(...Arguments)` This function will return the given argument as an int
+***
+## Constants
+
+### \_version
+`_version` The current version of Epoxy. This constant is applied to any library, as it is internal to Epoxy
+### env
+`env` The environment of Epoxy, everything in the standard library
+***
+## Libraries
+
+### string
+```
+string.split(a,b) --Returns a split into an array with b
+string.repeat(a,b) --Repeats the string, a, b amount of times
+string.starts(a,b) --Returns if a starts with b
+string.ends(a,b) --Returns if a ends with b
+string.sub(a,b,c) --Returns the JS equivalent to String.substring(a,b,c)
+string.subs(a,b,c) --Returns the JS equivalent to String.sub(a,b,c)
+string.match(a,b) --Returns a pattern of a matching b
+string.reverse(a) --Returns the reverse of a
+string.lower(a) --Returns a but all lowercase
+string.upper(a) --Returns a but all uppercase
+string.char(a) --Returns the char code of a
+string.byte(a) --Returns the char of the char code a
+```
+### array
+```
+array.has(a,b) --Returns if a has b
+array.find(a,b) --Returns the index of b in a
+array.reverse(a) --Returns the reverse of a
+array.join(a,b) --Returns a string of all values in a joined by b
+array.append(a,b) --Appends b to the end of a
+array.prepend(a,b) --Prepends b to the front of a
+array.remove(a,b) --Removes b index in a
+array.pop(a) --Removes the last element in a
+array.prepop(a) --Removes the first element in a
+array.each(a,b) --Iterates through a with b, (value,key,array)=>...
+```
+### bit
+```
+bit.and(a,b) --Returns the bitwise and operation on a and b
+bit.or(a,b) --Returns the bitwise or operation on a and b
+bit.xor(a,b) --Returns the bitwise xor operation on a and b
+bit.not(a) --Returns the bitwise not operation on a
+bit.rshift(a,b) --Returns the bitwise right-shift operation on a and b
+bit.lshift(a,b) --Returns the bitwise left-shift operation on a and b
+```
+### thread
+```
+thread.get() --Returns the current running thread
+thread.yield(Thread) --Yields the given thread
+thread.resume(Thread,...Arguments) --Resumes the given thread, but passes the arguments to where the thread was yielded (i.e thread.yield())
+thread.async(Call,...Arguments) --Same functionality as the "async" function, but it shouldn't have to wait for an event loop to start
+thread.suspend(Thread,Time) --Yields the given thread until Time seconds have passed
+```
+### math
+```
+math.sin(x) --Returns the sin of x
+math.cos(x) --Returns the cos of x
+math.tan(x) --Returns the tan of x
+math.asin(x) --Returns the asin of x
+math.acos(x) --Returns the acos of x
+math.atan(x) --Returns the atan of x
+math.atan2(y,x) --Returns the atan2 of y and x
+math.floor(x) --Returns the floor of x
+math.ceil(x) --Returns the ceil of x
+math.round(x) --Rounds x to the nearest integer
+math.nround(x,b) --Rounds x to the nearest decimal place b
+math.sqrt(x) --Returns the sqrt of x
+math.pow(x,y) --Returns x ^ y
+math.log(x) --Returns the ln of x
+math.abs(x) --Returns the absolute value of x
+math.log10(x) --Returns the log of x
+math.logb(x,b) --Returns the log of x with base b
+math.rad(x) --Returns x in radians
+math.deg(x) --Returns x in degrees
+math.random(min,max) --Returns a random number from min to max
+math.nroot(x,b) --Returns the nth-root of x at b 
+math.max(...Arguments) --Returns the max in the provided arguments
+math.min(...Arguments) --Returns the min in the provided arguments
+math.clamp(x,min,max) --Returns x clamped between min and max
+math.pi --Pi Constant
+math.e --E Constant
+```
