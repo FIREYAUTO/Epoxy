@@ -68,7 +68,7 @@ class EpoxyState {
 		if(Value===undefined&&this.Parent){
 			for(let Property of StatePropagation.OnGlobalRead){
 				let {Names,Check}=Property;
-				if(Names.include(Name)&&Check(this,this.Parent)){
+				if(Names.includes(Name)&&Check(this,this.Parent)){
 					Value = this.Parent.GlobalRead(Name);
 					break;
 				}
