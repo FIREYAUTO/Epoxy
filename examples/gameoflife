@@ -1,0 +1,125 @@
+--Conways game of life
+
+fn g_map(x,y) --Generate a map (array)
+	var map: []
+	loop iy:0;iy<=y-1;iy+:1 do
+		var col: []
+		loop ix:0;ix<=x-1;ix+:1 do
+			col[ix]: 0
+		cls
+		map[iy]: col
+	cls
+	return map
+cls
+
+fn c_map(map) --Clear a map
+	iter y,c as map do
+		iter x,r as c do
+			c[x]: 0
+		cls
+	cls
+cls
+
+fn s_state(map,x,y,s)
+	map[y][x]: s
+cls
+
+fn g_state(map,x,y)
+	var my: map[y]
+	if !my then return 0 cls
+	return toint(my[x])
+cls
+
+var cell_search: [
+	[-1,-1],
+	[-1,1],
+	[1,-1],
+	[1,1],
+	[0,-1],
+	[0,1],
+	[-1,0],
+	[1,0],
+]
+
+fn live_cells(map,x,y)
+	var live: 0
+	iter s of cell_search do
+		var st: g_state(map,x+s[0],y+s[1])
+		if st==1 then
+			live+: 1
+		cls
+	cls
+	return live
+cls
+
+fn game(map)
+	return {
+		map,
+		gen:0,
+		fn calculate(self)
+			var map: self.map,
+				nm: g_map(#map[0],#map)
+			iter y,c as map do
+				iter x,r as c do
+					x:toint(x)
+					y:toint(y)
+					r:toint(r)
+					var N: live_cells(map,x,y)
+					if r==1 then
+						if N<=1||N>=4 then
+							nm[y][x]: 0
+						else
+							nm[y][x]: 1
+						cls
+					elseif r==0 then
+						if N==3 then
+							nm[y][x]: 1
+						else
+							nm[y][x]: 0
+						cls
+					cls
+				cls
+			cls
+			self.map: nm
+		cls,
+		fn next(self)
+			self.gen+: 1
+			self>>calculate()
+		cls,
+		fn text(self)
+			var t: []
+			iter y,r as self.map do
+				var s: ""
+				iter x,c as r do
+					if c==0 then
+						s+: "-"
+					else
+						s+: "#"
+					cls
+				cls
+				array.append(t,s)
+			cls
+			return array.join(t,"<br>")
+		cls,
+	}
+cls
+
+var m: g_map(6,5),
+	g: game(m)
+	
+s_state(m,1,1,1)
+s_state(m,1,2,1)
+s_state(m,1,3,1)
+
+s_state(m,4,1,1)
+s_state(m,4,2,1)
+s_state(m,4,3,1)
+
+log(g>>text())
+log(" ")
+loop i:1;i<=4;i+:1 do
+	wait(0.1)
+	g>>next()
+	log(g>>text())
+	log(" ")
+cls
