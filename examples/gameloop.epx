@@ -1,0 +1,31 @@
+--{{ Game Loop }}--
+
+var FPS: 1/5,
+	Listeners: []
+
+fn GameLoop()
+	var Time: time()
+	while true do
+		wait(FPS)
+		var T: time(),
+			Delta: T-Time
+		Time: T
+		iter Listener of Listeners do
+			Listener(Delta)
+		cls
+	cls
+cls
+
+fn Hook(Function)
+	array.append(Listeners,thread.genasync(Function))
+cls
+
+async(GameLoop)
+
+--{{ Testing }}--
+
+fn Main(Delta)
+	log(1/Delta)
+cls
+
+Hook(Main)
