@@ -273,7 +273,7 @@ string.repeat(a,b) --Repeats the string, a, b amount of times
 string.starts(a,b) --Returns if a starts with b
 string.ends(a,b) --Returns if a ends with b
 string.sub(a,b,c) --Returns the JS equivalent to String.substring(a,b,c)
-string.subs(a,b,c) --Returns the JS equivalent to String.sub(a,b,c)
+string.subs(a,b,c) --Returns the JS equivalent to String.substr(a,b,c)
 string.match(a,b) --Returns a pattern of a matching b
 string.reverse(a) --Returns the reverse of a
 string.lower(a) --Returns a but all lowercase
