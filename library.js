@@ -7,10 +7,43 @@
 \*************************/
 
 class Thread {
-	constructor(Stack,State,Resolve){
-		this.Stack
+	constructor(Stack,State){
+		let Hidden = {
+			State:State,
+			Resolve:undefined,
+			Yield:false,
+		};
+		this.GetState = function(Stk,St){
+			if(Stk===Stack&&St===State)return null;
+			return Hidden.State;
+		}
+		this.GetResolve = function(Stk,St){
+			if(Stk===Stack&&St===State)return null;
+			return Hidden.Resolve;
+		}
+		this.WriteResolve = function(Stk,St){
+			if(Hidden.Yield===true)return null;
+			if(Stk===Stack&&St===State)return null;
+			Hidden.Resolve=Stk;
+		}
+		this.Yield = function(Stk,St){
+			if(Stk===Stack&&St===State)return null;
+			Hidden.Yield=true;
+		}
+		this.Resume = function(Stk,St,...Arguments){
+			if(!Hidden.Yield)return null;
+			if(Stk===Stack&&St===State)return null;
+			Hidden.Yield=false;
+			Hidden.Resolve(...[Stk,St,...Arguments]);
+			Hidden.Resolve=undefined;
+		}
+		this.running = function(Stk,St){
+			return !Hidden.Yield;
+		}
 	}
-	
+	toString(){
+		return "thread"	
+	}
 }
 
 /*************************\
@@ -148,16 +181,25 @@ const Library = {
     },
 	thread:{
 		get:async function(Stack,State){
-			if(State.Read("Thread"))
+			let T = State.GlobalRead("Thread");
+			if(!T){
+				T = new Thread(Stack,State);
+				State.Write("Thread",T);
+			}
+			return T;
 		},
 		yield:async function(Stack,State,T){
-			if(State.Read("Yielded")===true)return;
-			State.Write("Yielded",true),
+			if(!(T instanceof Thread))return null;
 			return await new Promise(r=>{
-				State.Write("YieldResolve",r);
+				let R=T.Yield();
+				if(R===null)return r();
+				T.WriteResolve(r);
 			});
 		},
-		resume:async function(Stack,State
+		resume:async function(Stack,State,T,...Arguments){
+			if(!(T instanceof Thread))return null;
+			await T.Resume(...Arguments);
+		},
 	},
 };
 
