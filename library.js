@@ -196,11 +196,11 @@ const Library = {
 				let R=T.Yield();
 				if(R===null)return r();
 				T.WriteResolve(r);
-			});
+			}).then(x=>x);
 		},
 		resume:async function(Stack,State,T,...Arguments){
 			if(!(T instanceof Thread))return null;
-			await T.Resume(...Arguments);
+			T.Resume(...Arguments);
 		},
 	},
 };
