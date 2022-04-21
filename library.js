@@ -37,7 +37,6 @@ class Thread {
 			if(Stk===Stack&&St===State)return null;
 			Hidden.Yield=false;
 			Hidden.Resolve(...[Stk,St,...Arguments]);
-			Hidden.Resolve=undefined;
 		}
 		this.running = function(Stk,St){
 			return !Hidden.Yield;
@@ -193,14 +192,14 @@ const Library = {
 		yield:async function(Stack,State,T){
 			if(!(T instanceof Thread))return null;
 			return await new Promise(r=>{
+				T.WriteResolve(r);
 				let R=T.Yield();
 				if(R===null)return r();
-				T.WriteResolve(r);
 			}).then(x=>x);
 		},
 		resume:async function(Stack,State,T,...Arguments){
 			if(!(T instanceof Thread))return null;
-			T.Resume(...Arguments);
+			await T.Resume(...Arguments);
 		},
 	},
 };
