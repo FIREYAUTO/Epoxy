@@ -1,0 +1,49 @@
+fn Connection(Signal,Callback)
+	var New: {
+		Callback: Callback,
+		Signal: Signal,
+	}
+	iter Key,Value as this.Prototype do
+		New[Key]: Value
+	cls
+	return New
+cls
+Connection.Prototype: {
+	fn Disconnect(self)
+		var Connections: self.Signal.Connections
+		array.remove(Connections,array.find(Connections,self))
+	cls,
+}
+
+fn Signal()
+	var New: {
+		Connections: [],
+	}
+	iter Key,Value as this.Prototype do
+		New[Key]: Value
+	cls
+	return New
+cls
+Signal.Prototype: {
+	fn Connect(self,Callback)
+		var Connect: Connection(self,Callback)
+		array.append(self.Connections,Connect)
+		return Connect
+	cls,
+	fn Fire(self,...Arguments)
+		iter Connect of self.Connections do
+			Connect.Callback(...Arguments)
+		cls
+	cls,
+}
+
+--{{ Testing }}--
+
+var MySignal: Signal(),
+	MyConnection: MySignal>>Connect(fn(a,b)
+		log(a+b)
+		MyConnection>>Disconnect()
+	cls)
+
+MySignal>>Fire(1,2)
+MySignal>>Fire(1,2)
