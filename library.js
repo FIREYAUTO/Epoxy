@@ -207,7 +207,7 @@ const Library = {
 		suspend:async function(Stack,State,T,Time){
 			if(!(T instanceof Thread))return null;
 			setTimeout(()=>Library.thread.resume(Stack,State,T),Time*1000);
-			Library.thread.yield(Stack,State,T);
+			await Library.thread.yield(Stack,State,T);
 		}
 	},
 };
