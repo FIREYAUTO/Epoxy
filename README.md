@@ -310,6 +310,7 @@ thread.yield(Thread) --Yields the given thread
 thread.resume(Thread,...Arguments) --Resumes the given thread, but passes the arguments to where the thread was yielded (i.e thread.yield())
 thread.async(Call,...Arguments) --Same functionality as the "async" function, but it shouldn't have to wait for an event loop to start
 thread.suspend(Thread,Time) --Yields the given thread until Time seconds have passed
+thread.genasync(Call) --Returns an asynchronous proxy function to prevent memory issues with thread.async or async
 ```
 ### math
 ```
