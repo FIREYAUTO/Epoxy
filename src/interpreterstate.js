@@ -12,6 +12,16 @@ const StatePropagation = {
 			Names:["Break","Continue"],
 			Check:(c,p)=>c.Read("IsLoop")!=true,
 		},
+		{
+			Names:["Thread"],
+			Check:(c,p)=>c.Read("IsFunction")!=true,
+		},
+	],
+	OnGlobalRead:[
+		{
+			Names:["Thread"],
+			Check:(c,p)=>c.Read("IsFunction")!=true,
+		},
 	],
 }
 
@@ -52,6 +62,19 @@ class EpoxyState {
 	}
 	Read(Name){
 		return this.Data[Name];	
+	}
+	GlobalRead(Name){
+		let Value = this.Read(Name);
+		if(Value===undefined&&this.Parent){
+			for(let Property of StatePropagation.OnGlobalRead){
+				let {Names,Check}=Property;
+				if(Names.include(Name)&&Check(this,this.Parent)){
+					Value = this.Parent.GlobalRead(Name);
+					break;
+				}
+			}
+		}
+		return Value;
 	}
 	Next(Amount=1){
 		this.Position+=Amount;
