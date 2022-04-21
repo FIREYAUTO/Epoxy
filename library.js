@@ -201,8 +201,8 @@ const Library = {
 			if(!(T instanceof Thread))return null;
 			await T.Resume(...Arguments);
 		},
-		async:async function(Stack,State,Call){
-			(async(...A)=>Call(Stack,State,...A))();
+		async:async function(Stack,State,Call,...AR){
+			(async(...A)=>Call(Stack,State,...A))(...AR);
 		},
 		suspend:async function(Stack,State,T,Time){
 			if(!(T instanceof Thread))return null;
@@ -210,6 +210,35 @@ const Library = {
 			await Library.thread.yield(Stack,State,T);
 		}
 	},
+	math:{
+		sin:(stk,s,x)=>Math.sin(x),
+		cos:(stk,s,x)=>Math.cos(x),
+		tan:(stk,s,x)=>Math.tan(x),
+		asin:(stk,s,x)=>Math.asin(x),
+		acos:(stk,s,x)=>Math.acos(x),
+		atan:(stk,s,x)=>Math.atan(x),
+		atan2:(stk,s,y,x)=>Math.atan2(y,x),
+		floor:(stk,s,x)=>Math.floor(x),
+		ceil:(stk,s,x)=>Math.ceil(x),
+		round:(stk,s,x)=>Math.round(x),
+		sqrt:(stk,s,x)=>Math.sqrt(x),
+		pow:(stk,s,x)=>Math.pow(x),
+		log:(stk,s,x)=>Math.log(x),
+		abs:(stk,s,x)=>Math.abs(x),
+		log10:(stk,s,x)=>Math.log10(x),
+		logb:(stk,s,x,b=10)=>Math.log10(x)/Math.log10(b),
+		nround:(stk,s,x,b=0)=>{let m=10**b;return Math.floor(x*m+0.5)/m},
+		rad:(stk,s,x)=>x*(Math.PI/180),
+		deg:(stk,s,x)=>x*(180/Math.PI),
+		random:(stk,s,mi,ma)=>Math.floor(Math.random()*(ma-mi+1)+mi),
+		nroot:(stk,s,x,b=2)=>x**(1/b),
+		max:(stk,s,...a)=>Math.max(...a),
+		min:(stk,s,...a)=>Math.min(...a),
+		clamp:(stk,s,x,a,b)=>Math.max(a,Math.min(x,b)),
+		pi:Math.PI,
+		e:Math.E,
+	},
+	
 };
 
 Library.env = Library;
