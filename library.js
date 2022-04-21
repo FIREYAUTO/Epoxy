@@ -201,6 +201,14 @@ const Library = {
 			if(!(T instanceof Thread))return null;
 			await T.Resume(...Arguments);
 		},
+		async:async function(Stack,State,Call){
+			(async(...A)=>Call(Stack,State,...A))();
+		},
+		suspend:async function(Stack,State,T,Time){
+			if(!(T instanceof Thread))return null;
+			setTimeout(()=>Library.thread.resume(Stack,State,T),Time*1000);
+			Library.thread.yield(Stack,State,T);
+		}
 	},
 };
 
