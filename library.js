@@ -208,7 +208,13 @@ const Library = {
 			if(!(T instanceof Thread))return null;
 			setTimeout(()=>Library.thread.resume(Stack,State,T),Time*1000);
 			await Library.thread.yield(Stack,State,T);
-		}
+		},
+		genasync:async function(Stack,State,Call){
+			let Proxy = async(...A)=>Call(...A);
+			return function(...A){
+				Proxy(...A);	
+			}
+		},
 	},
 	math:{
 		sin:(stk,s,x)=>Math.sin(x),
