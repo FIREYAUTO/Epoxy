@@ -61,17 +61,20 @@ class InterpreterStack {
 	}
 	async Parse(State,Token,Unpack=false){
 		this.HandleEnded();
-		if(!(Token instanceof ASTBase))return Token;
+		if(!(Token instanceof ASTBase))return Token===undefined?null:Token;
+		let Result = undefined;
 		for(let Name in this.States){
 			let Call = this.States[Name];
-			if(Token.Type===Name)return await Call(State,Token);
+			if(Token.Type===Name){Result=await Call(State,Token);break}
 			else if(Token.Type==="Unpack"){
 				if(Unpack===true){
 					let List=await this.Parse(State,Token.Read("List"),true);
-					return new UnpackState(List);
+					Result=new UnpackState(List);
+					break;
 				}else ErrorHandler.InterpreterError(Token,"Unexpected",["unpacking operator"]);
 			}
 		}
+		return Result===undefined?null:Result;
 	}
 	HandleEnded(){
 		if(this.Ended)ErrorHandler.InterpreterError(this.MainState,"Halt",[this.EndedMessage]);	
