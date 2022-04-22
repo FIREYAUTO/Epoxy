@@ -165,13 +165,14 @@ class TokenizerStack {
 	}
 	EscapeStringLiteral(Literal){
 		switch (Literal) {
-			case "r": return "\r";
-			case "n": return "\n";
-			case "b": return "\b";
-			case "t": return "\t";
-			case "c": return "\c";
-			case "f": return "\f";
-			case "v": return "\v";
+			case "r": return"\r";
+			case "n": return"\n";
+			case "b": return"\b";
+			case "t": return"\t";
+			case "c": return"\c";
+			case "f": return"\f";
+			case "v": return"\v";
+			case "t": return"\t";
 			default: return Literal;
 		}	
 	}
