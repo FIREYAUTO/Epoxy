@@ -220,6 +220,16 @@ const Chunks = [
 			return this.NewNode("Continue");
 		},
 	},
+	{
+		Name:"DELETE",
+		Type:"Keyword",
+		Call:function(){
+			this.Next();
+			let Node = this.NewNode("DeleteVariable");
+			Node.Write("Variables",this.IdentifierList({}));
+			return Node;
+		},
+	},
 	/*
 	{
 		Name:"Name",
