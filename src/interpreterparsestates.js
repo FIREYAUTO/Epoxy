@@ -169,6 +169,10 @@ const InterpreterStates = {
 		let Variables = Token.Read("Variables");
 		for(let Variable of Variables)State.NewVariable(Variable.Name,await this.Parse(State,Variable.Value));
 	},
+	DeleteVariable:async function(State,Token){
+		let Variables = Token.Read("Variables");
+		for(let Variable of Variables)State.DeleteVariable(Variable.Name);
+	},
 	NewDestructuringVariable:async function(State,Token){
 		let Variables = Token.Read("Variables"),
 		    Values = await this.ParseArray(State,Token.Read("Values"));
