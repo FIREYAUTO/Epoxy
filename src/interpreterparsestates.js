@@ -167,11 +167,19 @@ const InterpreterStates = {
 	},
 	NewVariable:async function(State,Token){
 		let Variables = Token.Read("Variables");
-		for(let Variable of Variables)State.NewVariable(Variable.Name,await this.Parse(State,Variable.Value));
+		for(let Variable of Variables){
+			State.NewVariable(Variable.Name,await this.Parse(State,Variable.Value),{
+				Constant:Variable.Constant	
+			});
+		}
 	},
 	DeleteVariable:async function(State,Token){
 		let Variables = Token.Read("Variables");
-		for(let Variable of Variables)State.DeleteVariable(Variable.Name);
+		for(let Variable of Variables){
+			let Var = State.GetGlobalRawVariable(Variable.Name);
+			if(Var.Constant===true)ErrorHandler.InterpreterError(this,"Cannot",[`delete the constant variable ${Variable.Name}`]);
+			State.DeleteVariable(Variable.Name);
+		}
 	},
 	NewDestructuringVariable:async function(State,Token){
 		let Variables = Token.Read("Variables"),
@@ -197,6 +205,8 @@ const InterpreterStates = {
 			let v=Names[k=+k],
 			    vv=Values[k];
 			if(vv===undefined)vv=null;
+			let Var = State.GetGlobalRawVariable(v);
+			if(Var.Constant===true)ErrorHandler.InterpreterError(this,"Cannot",[`modify the constant variable ${v}`]);
 			State.SetVariable(v,vv);
 		}
 		return Values;
@@ -210,6 +220,7 @@ const InterpreterStates = {
 				Name = Name.Read("Name");
 				let Variable=State.GetGlobalRawVariable(Name);
 				if(Variable){
+					if(Variable.Constant===true)ErrorHandler.InterpreterError(this,"Cannot",[`modify the constant variable ${Name}`]);
 					let Previous=Variable.Value;
 					State.SetVariable(Name,await Call(this,State,Variable.Value,Value));
 					return Variable.Value;
