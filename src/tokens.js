@@ -58,6 +58,7 @@ const RawTokens = [
 	new InternalToken("ITERATE","iter",Types[0]),
 	new InternalToken("DVAR","dvar",Types[0]),
 	new InternalToken("DELETE","del",Types[0]),
+	new InternalToken("CONST","const",Types[0]),
 	//Whitespace Tokens
 	new InternalToken("SPACE",String.fromCharCode(32),Types[2]),
 	new InternalToken("TAB",String.fromCharCode(9),Types[2]),
