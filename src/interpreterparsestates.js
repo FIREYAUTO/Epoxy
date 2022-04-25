@@ -177,7 +177,7 @@ const InterpreterStates = {
 		let Variables = Token.Read("Variables");
 		for(let Variable of Variables){
 			let Var = State.GetGlobalRawVariable(Variable.Name);
-			if(Var.Constant===true)ErrorHandler.InterpreterError(this,"Cannot",[`delete the constant variable ${Variable.Name}`]);
+			if(Var.Constant===true)ErrorHandler.InterpreterError(State,"Cannot",[`delete the constant variable ${Variable.Name}`]);
 			State.DeleteVariable(Variable.Name);
 		}
 	},
@@ -206,7 +206,7 @@ const InterpreterStates = {
 			    vv=Values[k];
 			if(vv===undefined)vv=null;
 			let Var = State.GetGlobalRawVariable(v);
-			if(Var.Constant===true)ErrorHandler.InterpreterError(this,"Cannot",[`modify the constant variable ${v}`]);
+			if(Var.Constant===true)ErrorHandler.InterpreterError(State,"Cannot",[`modify the constant variable ${v}`]);
 			State.SetVariable(v,vv);
 		}
 		return Values;
@@ -220,7 +220,7 @@ const InterpreterStates = {
 				Name = Name.Read("Name");
 				let Variable=State.GetGlobalRawVariable(Name);
 				if(Variable){
-					if(Variable.Constant===true)ErrorHandler.InterpreterError(this,"Cannot",[`modify the constant variable ${Name}`]);
+					if(Variable.Constant===true)ErrorHandler.InterpreterError(State,"Cannot",[`modify the constant variable ${Name}`]);
 					let Previous=Variable.Value;
 					State.SetVariable(Name,await Call(this,State,Variable.Value,Value));
 					return Variable.Value;
