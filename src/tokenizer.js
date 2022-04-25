@@ -15,7 +15,7 @@ class TokenizerStack {
 			this.Tokens=Code.split(""),
 			this.Result=[],
 			this.TokenIndex=0,
-			this.TokenLine=0,
+			this.TokenLine=1,
 			this.Index=0,
 			this.Token=this.Tokens[0];
 	}
