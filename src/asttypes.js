@@ -34,6 +34,24 @@ const Chunks = [
 		},
 	},
 	{
+		Name:"CONST",
+		Type:"Keyword",
+		Call:function(){
+			this.Next();
+			let Node = this.NewNode("NewVariable");
+			let Variables = this.IdentifierList({
+				AllowDefault:true,
+				Priority:-1,
+				EType:"variable expression",
+			});
+			for(let Variable of Variables){
+				Variable.Constant = true;	
+			}
+			Node.Write("Variables",Variables);
+			return Node;
+		},
+	},
+	{
 		Name:"DVAR",
 		Type:"Keyword",
 		Call:function(){
