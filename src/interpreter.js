@@ -11,7 +11,7 @@ import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/as
 \*************************/
 
 const DefaultEnvironment = {
-	"_version":"Epoxy 1.0",
+	"_version":"Epoxy 1.1",
 };
 
 /*************************\
