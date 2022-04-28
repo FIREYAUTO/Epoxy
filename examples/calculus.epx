@@ -1,0 +1,15 @@
+fn Derivative(f,x)
+	var d: 1e-9
+	return (f(x+d)-f(x))/d
+cls
+
+fn Integral(f,a,b)
+	return ((b-a)/6)*(f(a)+(4*f((a+b)/2))+f(b));
+cls
+
+fn f(x)
+	return x^2
+cls
+
+log(Integral(f,0,2))
+log(Derivative(f,2))
