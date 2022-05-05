@@ -171,7 +171,7 @@ const Library = {
 			return a.shift();
 		},
 		each:function(Stack,State,a,c){
-			for(let k in a)c(a[k],k,a);
+			for(let k in a)c(Stack,State,a[k],k,a);
 		},
 	},
 	bit:{
