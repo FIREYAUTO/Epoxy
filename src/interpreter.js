@@ -151,6 +151,9 @@ class InterpreterStack {
 			if(Returns[0]===undefined)Returns[0]=null;
 			return Returns[0];
 		}
+		Callback.toString=function(){
+			return "[Epoxy Function]";	
+		}
 		return Callback;
 	}
 	/*
