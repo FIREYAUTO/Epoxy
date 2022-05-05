@@ -125,7 +125,7 @@ class InterpreterStack {
 				Stop=false,
 				Args=[];
 			NewState.NewVariable("this",Callback),
-				NewState.NewVariable("arguments",Args)
+				NewState.NewVariable("arguments",Arguments);
 			for(let Key in Parameters){
 				let Parameter = Parameters[Key],
 				    Argument = Arguments[Key];
