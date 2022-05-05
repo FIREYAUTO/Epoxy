@@ -256,6 +256,8 @@ Text
 `tofloat(...Arguments)` This function will return the given argument as a float
 ### toint
 `toint(...Arguments)` This function will return the given argument as an int
+### assert
+`assert(Condition,Message)` This function will throw an error with the given Message if the Condition is false or null
 ***
 ## Constants
 
@@ -278,8 +280,8 @@ string.match(a,b) --Returns a pattern of a matching b
 string.reverse(a) --Returns the reverse of a
 string.lower(a) --Returns a but all lowercase
 string.upper(a) --Returns a but all uppercase
-string.char(a) --Returns the char code of a
-string.byte(a) --Returns the char of the char code a
+string.char(a) --Returns the char of the char code a
+string.byte(a) --Returns the char code of a
 ```
 ### array
 ```
@@ -340,4 +342,22 @@ math.min(...Arguments) --Returns the min in the provided arguments
 math.clamp(x,min,max) --Returns x clamped between min and max
 math.pi --Pi Constant
 math.e --E Constant
+```
+### json
+```
+json.encode(x) --Encodes x with json
+json.decode(x) --Decodes x with json
+```
+### regex
+```
+regex.new(pattern,flags) --Returns a new RegExp object with the given pattern and flags. Requires knowledge in JavaScript RegExp
+```
+### debug
+```
+debug.varlen() --Returns the number of variables in the current stack
+debug.gvarlen() --Returns the total number of variables in the current stack and all its parents
+debug.newvar(Name,Value) --Creates a variable in the given stack with Name and Value
+debug.delvar(Name) --Deletes the variable with a name of Name in the current stack
+debug.getvar(Name) --Returns the value of the variable with a name of Name in the current stack
+debug.read(Name) --Returns an internal setting for Epoxy to manipulate stacks
 ```
