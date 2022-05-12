@@ -45,9 +45,9 @@ cls
 ```
 
 ## Switch Statements
-
+This statement behaves as you'd expect it to. Doesn't require `break` statements in between cases.
 ```
-switch <Condition> do
+switch <Expression> do
 	case <Expression> do
 		<Code>
 	case <Expression> do
