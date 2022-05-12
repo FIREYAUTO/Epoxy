@@ -43,6 +43,19 @@ else
 	<Code>
 cls
 ```
+
+## Switch Statements
+
+```
+switch <Condition> do
+	case <Expression> do
+		<Code>
+	case <Expression> do
+		<Code>
+	default
+		<Code>
+cls
+```
 ***
 ## Loops
 
