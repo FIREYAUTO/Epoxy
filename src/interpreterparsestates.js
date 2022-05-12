@@ -381,6 +381,25 @@ const InterpreterStates = {
 			}
 		}
 	},
+	Switch:async function(State,Token){
+		let Expression = await this.Parse(State,Token.Read("Expression"));
+		let Default = Token.Read("Default"),
+		    Cases = Token.Read("Cases"),
+		    Matched = false;
+		for(let Case of Cases){
+			let Exp = await this.Parse(State,Case.Read("Expression"));
+			if(await OperatorStates.eq(this,State,Expression,Exp)){
+				Matched=true;
+				let NewState=new EpoxyState(Case.Read("Body"),State);
+				await this.ParseState(NewState);
+				break;
+			}
+		}
+		if(!Matched&&Default){
+			let NewState=new EpoxyState(Default.Read("Body"),State);
+			await this.ParseState(NewState);
+		}
+	},
 	While:async function(State,Token){
 		let Expression = Token.Read("Condition"),
 			Body = Token.Read("Body");
