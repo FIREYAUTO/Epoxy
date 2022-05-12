@@ -187,7 +187,7 @@ class TokenizerStack {
 			if(T.Escaped){
 				let M=L.match(/^u[0-9]+/),
 					LEN=1;
-				if(M)LEN=M.length+1;
+				if(M)LEN=String(M).length;
 				if(L.length>1)Add=L.substr(LEN,L.length),L=L.substr(0,LEN);
 				L=this.EscapeStringLiteral(L);
 			}
