@@ -138,26 +138,6 @@ const Chunks = [
 			}
 			Node.Write("Conditions",Conditions);
 			this.Chunk=this.OpenChunks.pop();
-			/*
-			Node.Write("Body",this.ParseBlock(" while parsing if statement",ProxyToken("THEN","Keyword")));
-			let Conditions = [];
-			while(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword")){
-				if(this.CheckNext("ELSEIF","Keyword")){
-					this.Next(2);
-					let Condition = this.NewNode("ElseIf");
-					
-					Condition.Write("Body",this.ParseBlock(" while parsing elseif statement",ProxyToken("THEN","Keyword")));
-					Conditions.push(Condition);
-				}else if(this.CheckNext("ELSE","Keyword")){
-					this.Next(2);
-					let Condition = this.NewNode("Else");
-					Condition.Write("Body",this.ParseBlock(" while parsing else statement"));
-					Conditions.push(Condition);
-					break;
-				}
-			}
-			Node.Write("Conditions",Conditions);
-			*/
 			return Node;
 		},
 	},
@@ -209,8 +189,11 @@ const Chunks = [
 		Type:"Keyword",
 		Call:function(){
 			let Node = this.NewNode("Return");
-			if(this.Chunk&&this.Chunk.Type==="IfBlock"){
-				if(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword")){
+			if(this.Chunk){
+				if(this.Chunk.Type==="IfBlock"&&(this.CheckNext("ELSEIF","Keyword")||this.CheckNext("ELSE","Keyword"))){
+					Node.Write("Expression",null);
+					return Node;
+				}else if(this.Chunk.Type==="SwitchBlock"&&(this.CheckNext("CASE","Keyword")||this.CheckNext("DEFAULT","Keyword"))){
 					Node.Write("Expression",null);
 					return Node;
 				}
@@ -245,6 +228,65 @@ const Chunks = [
 			this.Next();
 			let Node = this.NewNode("DeleteVariable");
 			Node.Write("Variables",this.IdentifierList({}));
+			return Node;
+		},
+	},
+	{
+		Name:"SWITCH",
+		Type:"Keyword",
+		Call:function(){
+			let Node = this.NewNode("Switch");
+			this.Next();
+			Node.Write("Expression",this.ParseExpression());
+			this.Next();
+			this.Test(this.Token,"DO","Keyword");
+			this.Next();
+			this.ErrorIfEOS(" while parsing switch statement");
+			
+			let Cases = [];
+			let Default = undefined;
+			
+			let Block = undefined,
+			    self = this;
+			function OpenBlock(){
+				let NB = self.OpenChunk();
+				if(Block){
+					self.OpenChunks.pop();
+				}
+				Block=NB;
+				return NB;
+			}
+			
+			while(!this.Token.is("CLOSE","Keyword")){
+				let Token = this.Token;
+				if(Token.is("CASE","Keyword")){
+					OpenBlock();
+					Block.Type="SwitchBlock";
+					this.Next();
+					let Case = this.NewNode("Case");
+					Case.Write("Expression",this.ParseExpression());
+					this.TestNext("DO","Keyword");
+					this.Next(2);
+					Case.Write("Body",Block);
+					Cases.push(Case);
+				}else if(Token.is("DEFAULT","Keyword")){
+					if(Default)ErrorHandler.ASTError(this,"Cannot",["define multiple default statements"]);
+					OpenBlock();
+					Block.Type="SwitchBlock";
+					this.Next();
+					let Def = this.NewNode("Default");
+					Def.Write("Body",Block);
+					Default=Def;
+				}else{
+					if(!Block)ErrorHandler.ASTError(this,"Unexpected",[this.GetFT({UseType:true,UseLiteral:true,Token:Token})]);
+					this.ParseChunk();
+					this.Next();
+				}
+				this.ErrorIfEOS(" while parsing switch statement");
+			}
+			this.Chunk=this.OpenChunks.pop();
+			Node.Write("Cases",Cases);
+			Node.Write("Default",Default);
 			return Node;
 		},
 	},
