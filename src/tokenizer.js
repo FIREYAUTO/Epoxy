@@ -164,6 +164,9 @@ class TokenizerStack {
 			Token.Literal=Value;
 	}
 	EscapeStringLiteral(Literal){
+		if(Literal.match(/^u[0-9]+/)){
+			return String.fromCharCode(Literal.match(/[0-9]+/));
+		}
 		switch (Literal) {
 			case "r": return"\r";
 			case "n": return"\n";
@@ -182,7 +185,10 @@ class TokenizerStack {
 			let L=T.Literal,
 				Add=undefined;
 			if(T.Escaped){
-				if(L.length>1)Add=L.substr(1,L.length),L=L.substr(0,1);
+				let M=L.match(/^u[0-9]+/),
+					LEN=1;
+				if(M)LEN=M.length;
+				if(L.length>1)Add=L.substr(LEN,L.length),L=L.substr(0,LEN);
 				L=this.EscapeStringLiteral(L);
 			}
 			Result+=L;
