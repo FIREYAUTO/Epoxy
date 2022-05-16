@@ -110,6 +110,7 @@ const RawTokens = [
 	new InternalToken("GEQ",">=",Types[3]),
 	new InternalToken("NEQ","!=",Types[3]),
 	new InternalToken("VARARG","...",Types[3]),
+	new InternalToken("RANGE","..",Types[3]),
 	new InternalToken("LINEEND",";",Types[3]),
 	new InternalToken("COMMA",",",Types[3]),
 	new InternalToken("LENGTH","#",Types[3]),
