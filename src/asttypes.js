@@ -799,9 +799,19 @@ const ComplexExpressions = [
 			return this.ASTExpression(Node,Priority);
 		},
 	},
-	/*
-	
-	*/
+	{
+		Name:"RANGE",
+		Type:"Operator",
+		Stop:false,
+		Priority:760,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("Range");
+			Node.Write("V1",Value);
+			Node.Write("V2",this.ParseExpression(Priority));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
 	/*
 	{
 		Name:"Name",
