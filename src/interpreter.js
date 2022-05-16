@@ -5,14 +5,7 @@
 import {EpoxyState} from "https://fireyauto.github.io/Epoxy/src/interpreterstate.js";
 import {InterpreterStates} from "https://fireyauto.github.io/Epoxy/src/interpreterparsestates.js";
 import {ASTBase,ASTNode,ASTBlock} from "https://fireyauto.github.io/Epoxy/src/astclasses.js";
-
-/*************************\
-    Default Environment
-\*************************/
-
-const DefaultEnvironment = {
-	"_version":"Epoxy 1.1",
-};
+import {DefaultEnvironment} from "https://fireyauto.github.io/Epoxy/src/defaultenvironment.js";
 
 /*************************\
         Interpreter
