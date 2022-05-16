@@ -276,6 +276,12 @@ const Library = {
 			return r;
 		},
 	},
+	io:{
+		prompt:(stk,s,q)=>window.prompt(q),
+		alert:(stk,s,t)=>window.alert(t),
+		confirm:(stk,s,t)=>window.confirm(t),
+		log:(stk,s,...a)=>console.log(...a),
+	},
 };
 
 Library.env = Library;
