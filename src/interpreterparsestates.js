@@ -467,8 +467,15 @@ const InterpreterStates = {
 		let V1 = await this.Parse(State,Token.Read("V1"));
 		return await OperatorStates.len(this,State,V1);
 	},
-	/*
-	*/
+	Range:async function(State,Token){
+		let V1 = await this.Parse(State,Token.Read("V1")),
+			V2 = await this.Parse(State,Token.Read("V2")),
+		    	List = [];
+		await OperatorStateChecks.MultiTypeCheck(this,State,[V1,V2],["number"]," while doing range operation");
+		if(V1 >= V2)return ErrorHandler.InterpreterError(Token,"Unexpected",["range number sequence (a must be less than b)"]);
+		for(let i=V1;i<=V2;i++)List.push(i);
+		return List;
+	},
 }
 
 /*************************\
