@@ -174,6 +174,7 @@ continue
 
 ```
 # <Expression> --Length Operator
+<Expression> .. <Expression> --Range operator (Creates a list from a to b)
 ```
 
 ### Indexing Operators
