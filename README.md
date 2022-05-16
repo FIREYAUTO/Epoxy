@@ -9,10 +9,10 @@ Epoxy is the first language created by FIREYAUTO to have a fully sandboxed envir
 Epoxy is considerably slow in the grand scheme of a programming language, but this is mainly due to the abstraction to make Epoxy easier to develop and maintain. In the future there may be tests to design compilers which could enhance the performance of Epoxy.
 
 # Reserved Keywords
-The tokens listed below are reserved keywords which cannot be used as variable names. 
+The tokens listed below are reserved keywords which cannot be used as variable names. Although, all of these can be used in object indexes though.
 
 ```
-var, fn, while, do, cls, loop, iter, of, as, in, true, false, null, return, dvar, if, elseif, else, break, continue, then
+var, fn, while, do, cls, loop, iter, of, as, in, true, false, null, return, dvar, if, elseif, else, break, continue, then, switch, case, default
 ```
 ***
 # Syntax Overview
