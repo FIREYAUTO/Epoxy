@@ -3,7 +3,7 @@
 \*************************/
 
 const DefaultEnvironment = {
-	"_version":"Epoxy 1.2",
+	"_version":"Epoxy 1.3",
 };
 
 /*************************\
