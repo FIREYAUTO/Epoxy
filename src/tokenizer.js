@@ -214,6 +214,9 @@ class TokenizerStack {
 			}else{
 				Stack.To(Position);
 				if(Result.match(/^[0-9]/))return ErrorHandler.TokenizerError(Stack,"Malformed",[`number ${Result}`]);
+				if(Token.Literal.match(/[^\w]/)===Token.Literal){
+					Token.Type="Operator";
+				}
 			}
 		}else if(Token.isType("String")){
 			let Result = undefined;
