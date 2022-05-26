@@ -464,6 +464,38 @@ const Expressions = [
 			return this.ASTExpression(Node,Priority);;
 		},
 	},
+	{
+		Name:"IF",
+		Type:"Keyword",
+		Call:function(Priority,AllowList,Type){
+			let Node = this.NewNode("ExpressionalIf");
+			this.Next();
+			Node.Write("Condition",this.ParseExpression());
+			this.TestNext("THEN","Keyword");
+			this.Next(2);
+			Node.Write("Expression",this.ParseExpression());
+			let Conditions = [];
+			while(this.CheckNext("ELSE","Keyword")||this.CheckNext("ELSEIF","Keyword")){
+				if(this.CheckNext("ELSEIF","Keyword")){
+					this.Next(2);
+					let N = this.NewNode("ElseIf");
+					N.Write("Condition",this.ParseExpression());
+					this.TestNext("THEN","Keyword");
+					this.Next(2);
+					N.Write("Expression",this.ParseExpression());
+					Conditions.push(N);
+				}else if(this.CheckNext("ELSE","Keyword")){
+					this.Next(2);
+					let N = this.NewNode("Else");
+					N.Write("Expression",this.ParseExpression());
+					Conditions.push(N);
+					break;
+				}
+			}
+			Node.Write("Conditions",Conditions);
+			return this.ASTExpression(Node,Priority);;
+		},
+	},
 	/*
 	
 	*/
