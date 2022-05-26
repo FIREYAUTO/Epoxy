@@ -243,6 +243,17 @@ true, false, null
 Text
 --]]
 ```
+
+## Expressional If Operator
+The expressional `if` operator is used to allow for a form of ternary expression like in JavaScript.
+```
+if <Condition> then <Expression> elseif <Condition> then <Expression> else <Expression>
+```
+Example:
+```
+var Test: if true then "Hello, world!" else "No"
+log(Test)
+```
 ***
 # Standard Library Overview
 
