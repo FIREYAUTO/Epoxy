@@ -476,6 +476,24 @@ const InterpreterStates = {
 		for(let i=V1;i<=V2;i++)List.push(i);
 		return List;
 	},
+	ExpressionalIf:async function(State,Token){
+		let Condition = await this.Parse(State,Token.Read("Condition")),
+		    Conditions = Token.Read("Conditions");
+		if(await OperatorStates.if(this,State,Condition)){
+			return await this.Parse(State,Token.Read("Expression"));	
+		}else{
+			for(let C of Conditions){
+				if(C.Type==="ElseIf"){
+					if(await OperatorStates.if(this,State,await this.Parse(State,C.Read("Condition")))){
+						return await this.Parse(State,C.Read("Expression"));	
+					}
+				}else if(C.Type==="Else"){
+					return await this.Parse(State,C.Read("Expression"));
+				}
+			}
+		}
+		return null;
+	},
 }
 
 /*************************\
