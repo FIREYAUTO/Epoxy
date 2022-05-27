@@ -494,6 +494,27 @@ const InterpreterStates = {
 		}
 		return null;
 	},
+	ComplexAssignment:async function(State,Token){
+		let Value = Token.Read("Value");
+		let Exp = await this.Parse(State,Token.Read("Expression"));
+		if(Value.Type==="GetVariable"){
+			let Name = Value.Read("Name"),
+			    Variable = State.GetGlobalRawVariable(Name);
+			if(Variable){
+				if(Variable.Constant===true)ErrorHandler.InterpreterError(State,"Cannot",[`modify the constant variable ${Name}`]);
+				State.SetVariable(Name,Exp);
+				return Exp;
+			}else{
+				State.SetVariable(Name,Exp);
+				return Exp;
+			}
+		}else if(Value.Type==="GetIndex"){
+			let Obj = await this.Parse(State,Value.Read("Object")),
+			    Idx = await this.Parse(State,Value.Read("Index"));
+			await OperatorStates.setIndex(this,State,Obj,Idx,Exp);
+			return Exp;
+		}
+	},
 }
 
 /*************************\
