@@ -30,6 +30,7 @@ var, fn, while, do, cls, loop, iter, of, as, in, true, false, null, return, dvar
 > `<Variable>`: A conglomerate of variables or indexes<br>
 > `<Text>`: A string of characters<br>
 > `<Function Declaration>`: A basic function declaration<br>
+> `<Complex Expression>`: A complex expression<br>
 
 ***
 ## If Statements
@@ -253,6 +254,21 @@ Example:
 ```
 var Test: if true then "Hello, world!" else "No"
 log(Test)
+```
+## Complex Assignment Operator
+The complex assignment operator `=` allows for a easier way to set variables/indexes in objects. This operator will set the current variable/index in an object to itself parsed with the complex expression.
+```
+<Expression> = <Complex Expression>
+```
+Example:
+```
+var test: fn(a,b)
+	return a+b
+cls
+
+test=(1,2)
+
+log(test) -- 3
 ```
 ***
 # Standard Library Overview
