@@ -844,6 +844,20 @@ const ComplexExpressions = [
 			return this.ASTExpression(Node,Priority);
 		},
 	},
+	{
+		Name:"ASSIGNMENT",
+		Type:"Operator",
+		Stop:true,
+		Priority:50,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next();
+			if(!(Value instanceof ASTBase)||(Value.Type!="GetVariable"&&Value.Type!="GetIndex"))ErrorHandler.ASTError(this,"Expected",["identifier or index for assignment"]);
+			let Node = this.NewNode("ComplexAssignment");
+			Node.Write("Value",Value);
+			Node.Write("Expression",this.ParseComplexExpression(this.ASTExpression(Value,-1)));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
 	/*
 	{
 		Name:"Name",
