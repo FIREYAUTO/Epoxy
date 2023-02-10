@@ -548,7 +548,7 @@ const InterpreterStates = {
 				let v=R[k];
 				if(v instanceof ASTBase){
 					RS.push(FindData(v.Data));
-				}else{
+				}else if(v==Blank){
 					RS.push({
 						Name:k,
 						Data:R,
