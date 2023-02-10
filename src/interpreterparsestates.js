@@ -329,6 +329,17 @@ const InterpreterStates = {
 		if(!(Call instanceof Function))ErrorHandler.InterpreterError(Token,"Attempt",["to call non-function"]);
 		return await Call(this,State,...Arguments);
 	},
+	MCall:async function(State,Token){
+		let Call = await this.Parse(State,Token.Read("Call")),
+			Arguments = Token.Read("Arguments"),
+		    	t=[];
+		for(let k in Arguments){
+			let v = Arguments[k];
+			v=await this.ParseArray(State,v);
+			t.push(await OperatorStates.call(this,State,Call,...v));
+		}
+		return new this.UnpackStateClass(t);
+	},
 	SelfCall:async function(State,Token){
 		let Obj = await this.Parse(State,Token.Read("Object")),
 		    Index = await this.Parse(State,Token.Read("Index")),
@@ -514,6 +525,47 @@ const InterpreterStates = {
 			await OperatorStates.setIndex(this,State,Obj,Idx,Exp);
 			return Exp;
 		}
+	},
+	Do:async function(State,Token){
+		let Expressions = Token.Read("Expressions"),
+			ComplexExpression = Token.Read("ComplexExpression"),
+			Result=[],
+			Ex=[],
+			Blank = Token.Read("Blank");
+		for(let _K in Expressions){
+			let E = Expressions[_K];
+			if(E instanceof ASTBase && E.Type=="Unpack"){
+				for(let x of await this.Parse(State,E.Read("List"),true)){
+					Ex.push(x);
+				}
+			}else{
+				Ex.push(E);
+			}
+		}
+		function FindData(R){
+			let RS=[];
+			for(let k in R){
+				let v=R[k];
+				if(v instanceof ASTBase){
+					RS.push(FindData(v.Data));
+				}else{
+					RS.push({
+						Name:k,
+						Data:R,
+					})
+				}
+			}
+			return RS;
+		}
+		let Data = FindData(ComplexExpression.Data);
+		for(let Expression of Ex){
+			for(let V of Data){
+				V.Data[V.Name]=Expression;
+			}
+			let R = await this.Parse(State,ComplexExpression)
+			Result.push(R);
+		}
+		return Result;
 	},
 }
 
