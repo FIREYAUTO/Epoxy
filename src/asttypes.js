@@ -317,7 +317,7 @@ const Chunks = [
 			}
 			let TryBody = Block;
 			this.TypeTestNext("Identifier");
-			let CatchVariable = this.Token.Value;
+			let CatchVariable = this.Token.Literal;
 			this.Next();
 			this.TestNext("DO","Keyword");
 			this.Next(2);
