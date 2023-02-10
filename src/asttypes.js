@@ -316,8 +316,9 @@ const Chunks = [
 				this.Next();
 			}
 			let TryBody = Block;
-			this.TypeTestNext("Identifier")
+			this.TypeTestNext("Identifier");
 			let CatchVariable = this.Token.Value;
+			this.Next();
 			this.TestNext("DO","Keyword");
 			this.Next();
 			OpenBlock();
