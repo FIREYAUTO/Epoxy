@@ -1,0 +1,15 @@
+fn Food(Name)
+	var New: {
+		Name
+	}
+	return New
+cls
+
+var Foods: [
+	Food("Apple"),
+	Food("Banana"),
+	Food("Orange"),
+	Food("Grape"),
+]
+
+log(do(...Foods).Name) -- Apple Banana Orange Grape
