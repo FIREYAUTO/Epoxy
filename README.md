@@ -125,6 +125,17 @@ break
 
 continue
 ```
+
+### Try & Catch
+
+```
+try
+	<Code>
+catch <Variable Name> do
+	<Code>
+cls
+```
+
 ***
 ## Operators
 
@@ -234,6 +245,17 @@ true, false, null
 ```
 <Expression> >> <Identifier>(<Expression>,...)
 ```
+
+### Multi Calling (MCall)
+
+```
+<Expression> | (<Expression>,...) ... |
+```
+Example:
+```
+log|("hi")("there")("from")("Epoxy!")|
+```
+
 ***
 ## Comments
 
@@ -269,6 +291,15 @@ cls
 test=(1,2)
 
 log(test) -- 3
+```
+## Do Expression
+The `do` expression is a complicated expression to wrap your head around. It may not have many practical uses, but it exists in the language for the people who need it.
+```
+do(<Expression>,...) <Complex Expression>
+```
+Example:
+```
+log(do(1,2,3)+1) --Output should be "2,3,4"
 ```
 ***
 # Standard Library Overview
