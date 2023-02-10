@@ -320,7 +320,7 @@ const Chunks = [
 			let CatchVariable = this.Token.Value;
 			this.Next();
 			this.TestNext("DO","Keyword");
-			this.Next();
+			this.Next(2);
 			OpenBlock();
 			Block.Type="CatchBlock";
 			while(!this.Token.is("CLS","Keyword")){
