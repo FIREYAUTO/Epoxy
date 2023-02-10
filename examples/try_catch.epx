@@ -1,0 +1,14 @@
+fn Add(a,b) --Add two numbers
+	if type(a)!="number" || type(b)!="number" then
+		error("a/b must be a number!") --Error if either value is not a number
+	cls
+	return a+b --Return the result
+cls
+
+try
+	Add("1",2) --Forced error, but it will be caught
+catch E do
+	log(E) --Log out the error message
+cls
+
+log(Add(1,2)) --Control
