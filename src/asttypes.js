@@ -735,7 +735,7 @@ const ComplexExpressions = [
 			let Arguments = [];
 			while(!this.Token.is("MCALL","Operator")){
 				this.Test(this.Token,"POPEN","Bracket");
-				Arguments.push(this.ExpressionListInside({Name:"POPEN",Type:"Bracket"},{Name:"POPEN",Type:"Bracket"}));
+				Arguments.push(this.ExpressionListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket")));
 				this.Next()
 				this.ErrorIfEOS();
 			}
