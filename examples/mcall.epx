@@ -1,0 +1,7 @@
+fn Add(a,b)
+	return a+b
+cls
+
+dvar a,b,c: Add|(1,2)(10,20)(100,200)|
+
+log(a,b,c) --3 30 300
