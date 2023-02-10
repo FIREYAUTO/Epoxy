@@ -567,6 +567,20 @@ const InterpreterStates = {
 		}
 		return Result;
 	},
+	Try:async function(State,Token){
+		let TryBody = Token.Read("TryBody"),
+			CatchBody = Token.Read("CatchBody"),
+			CatchVariable = Token.Read("CatchVariable");
+		try{
+			let NewState = new EpoxyState(TryBody,State);
+			await this.ParseState(NewState);
+		}catch(E){
+			E=E.message;
+			let NewState = new EpoxyState(CatchBody,State);
+			NewState.NewVariable(CatchVariable,E);
+			await this.ParseState(NewState);
+		}
+	},
 }
 
 /*************************\
