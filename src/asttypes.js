@@ -461,7 +461,22 @@ const Expressions = [
 			Node.Write("Parameters",this.IdentifierListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket"),{AllowDefault:true,AllowVararg:true}));
 			this.Next();
 			Node.Write("Body",this.ParseBlock(" while parsing function body"));
-			return this.ASTExpression(Node,Priority);;
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"DO",
+		Type:"Keyword",
+		Stop:true,
+		Call:function(Priority,AllowList,Type){
+			this.Next();
+			let Node = this.NewNode("Do");
+			Node.Write("Expressions",this.ExpressionListInside(ProxyToken("POPEN","Bracket"),ProxyToken("PCLOSE","Bracket")))
+			let B = {BLANK:true};
+			let CE = this.ParseComplexExpression(this.ASTExpression(B,Priority));
+			Node.Write("ComplexExpression",CE);
+			Node.Write("Blank",B);
+			return this.ASTExpression(Node,Priority);
 		},
 	},
 	{
@@ -493,7 +508,7 @@ const Expressions = [
 				}
 			}
 			Node.Write("Conditions",Conditions);
-			return this.ASTExpression(Node,Priority);;
+			return this.ASTExpression(Node,Priority);
 		},
 	},
 	/*
@@ -705,6 +720,26 @@ const ComplexExpressions = [
 			let Node = this.NewNode("Call");
 			Node.Write("Call",Value);
 			Node.Write("Arguments",this.ExpressionListInside({Name:"POPEN",Type:"Bracket"},{Name:"PCLOSE",Type:"Bracket"}));
+			return this.ASTExpression(Node,Priority);
+		},
+	},
+	{
+		Name:"MCALL",
+		Type:"Operator",
+		Stop:false,
+		Priority:1000,
+		Call:function(Value,Priority,AllowList,Type){
+			this.Next(2);
+			let Node = this.NewNode("MCall");
+			Node.Write("Call",Value);
+			let Arguments = [];
+			while(!this.Token.is("MCALL","Operator")){
+				this.Test(this.Token,"POPEN","Bracket");
+				Arguments.push(this.ExpressionListInside({Name:"POPEN",Type:"Bracket"},{Name:"POPEN",Type:"Bracket"}));
+				this.Next()
+				this.ErrorIfEOS();
+			}
+			Node.Write("Arguments",Arguments);
 			return this.ASTExpression(Node,Priority);
 		},
 	},
