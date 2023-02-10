@@ -62,6 +62,8 @@ const RawTokens = [
 	new InternalToken("SWITCH","switch",Types[0]),
 	new InternalToken("CASE","case",Types[0]),
 	new InternalToken("DEFAULT","default",Types[0]),
+	new InternalToken("TRY","try",Types[0]),
+	new InternalToken("CATCH","catch",Types[0]),
 	//Whitespace Tokens
 	new InternalToken("SPACE",String.fromCharCode(32),Types[2]),
 	new InternalToken("TAB",String.fromCharCode(9),Types[2]),
@@ -116,6 +118,7 @@ const RawTokens = [
 	new InternalToken("LENGTH","#",Types[3]),
 	new InternalToken("SELFCALL",">>",Types[3]),
 	new InternalToken("ASSIGNMENT","=",Types[3]),
+	new InternalToken("MCALL","|",Types[3]),
 	//Bracket Tokens
 	new InternalToken("BOPEN","{",Types[4]),
 	new InternalToken("BCLOSE","}",Types[4]),
