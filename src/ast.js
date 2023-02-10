@@ -13,6 +13,40 @@ class ASTExpression {
 	}
 }
 
+//
+
+const ALLOWED_CHUNK_COMPLEX_EXPRESSIONS = [
+	["COLON","Operator"],
+	["DOT","Operator"],
+	["SELFCALL","Operator"],
+	["POPEN","Bracket"],
+	["ADD","Operator"],
+	["SUB","Operator"],
+	["MUL","Operator"],
+	["DIV","Operator"],
+	["MOD","Operator"],
+	["POW","Operator"],
+	["IOPEN","Bracket"],
+	["ASSIGNMENT","Operator"],
+	["MCALL","Operator"],
+];
+
+const ALLOWED_CHUNK_EXPRESSIONS = [
+	["Identifier"],
+	["POPEN","Bracket"],
+	["DO","Keyword"],
+];
+
+const ALLOWED_CHUNK_AST_TYPES = [
+	"Assignment",
+	"Call",
+	"SelfCall",
+	"DestructuringAssignment",
+	"ComplexAssignment",
+	"MCall",
+	"Do",
+]
+
 /*************************\
          AST Stack
 \*************************/
@@ -381,9 +415,9 @@ class ASTStack {
 				return;
 			}
 		}
-		let Result = this.ParseExpression(-1,[["COLON","Operator"],["DOT","Operator"],["SELFCALL","Operator"],["POPEN","Bracket"],["ADD","Operator"],["SUB","Operator"],["MUL","Operator"],["DIV","Operator"],["MOD","Operator"],["POW","Operator"],["IOPEN","Bracket"],["ASSIGNMENT","Operator"]],undefined,[["Identifier"],["POPEN","Bracket"]]);
+		let Result = this.ParseExpression(-1,ALLOWED_CHUNK_COMPLEX_EXPRESSIONS,undefined,ALLOWED_CHUNK_EXPRESSIONS);
 		if(Result===undefined)ErrorHandler.ASTError(this,"Unexpected",[this.GetFT({UseType:true,UseLiteral:true,Token:Token})]);
-		if(!(Result instanceof ASTBase)||!["Assignment","Call","SelfCall","DestructuringAssignment","ComplexAssignment"].includes(Result.Type))ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Token})}`]);
+		if(!(Result instanceof ASTBase)||!ALLOWED_CHUNK_AST_TYPES.includes(Result.Type))ErrorHandler.ASTError(this,"Unexpected",[`${this.GetFT({UseType:true,UseLiteral:true,Token:Token})}`]);
 		this.SkipLineEnd();
 		this.ChunkWrite(Result);
 	}
