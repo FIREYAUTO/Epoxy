@@ -255,6 +255,16 @@ Example:
 ```
 log|("hi")("there")("from")("Epoxy!")|
 ```
+Something to note is that the mcall expression will return an unpack object, meaning this is how you'd be able to use it:
+```
+fn Add(a,b)
+	return a+b
+cls
+
+dvar a,b,c: Add|(1,2)(10,20)(100,200)| --This is where it can be used
+
+log(a,b,c) --3 30 300
+```
 
 ***
 ## Comments
