@@ -336,7 +336,7 @@ const InterpreterStates = {
 		for(let k in Arguments){
 			let v = Arguments[k];
 			v=await this.ParseArray(State,v);
-			t.push(await OperatorStates.call(this,State,Call,...v));
+			t.push(await Call(this,State,...v));
 		}
 		return new this.UnpackStateClass(t);
 	},
