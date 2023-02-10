@@ -323,7 +323,7 @@ const Chunks = [
 			this.Next(2);
 			OpenBlock();
 			Block.Type="CatchBlock";
-			while(!this.Token.is("CLS","Keyword")){
+			while(!this.Token.is("CLOSE","Keyword")){
 				this.ErrorIfEOS(" while parsing catch statement");
 				this.ParseChunk();
 				this.Next();
