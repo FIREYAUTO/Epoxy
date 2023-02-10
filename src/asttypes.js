@@ -290,6 +290,52 @@ const Chunks = [
 			return Node;
 		},
 	},
+	{
+		Name:"TRY",
+		Type:"Keyword",
+		Call:function(){
+
+			let Block = undefined,
+			    self = this;
+			function OpenBlock(){
+				let NB = self.OpenChunk();
+				if(Block){
+					self.OpenChunks.pop();
+				}
+				Block=NB;
+				return NB;
+			}
+
+			let Node = this.NewNode("Try");
+			this.Next();
+			OpenBlock()
+			Block.Type="TryBlock";
+			while(!this.Token.is("CATCH","Keyword")){
+				this.ErrorIfEOS(" while parsing try statement");
+				this.ParseChunk();
+				this.Next();
+			}
+			let TryBody = Block;
+			this.TypeTestNext("Identifier")
+			let CatchVariable = this.Token.Value;
+			this.TestNext("DO","Keyword");
+			this.Next();
+			OpenBlock();
+			Block.Type="CatchBlock";
+			while(!this.Token.is("CLS","Keyword")){
+				this.ErrorIfEOS(" while parsing catch statement");
+				this.ParseChunk();
+				this.Next();
+			}
+			let CatchBody = Block;
+			
+			Node.Write("TryBody",TryBody);
+			Node.Write("CatchBody",CatchBody);
+			Node.Write("CatchVariable",CatchVariable);
+			this.Chunk=this.OpenChunks.pop();
+			return Node;
+		},
+	},
 	/*
 	{
 		Name:"Name",
