@@ -329,7 +329,7 @@ log(do(1,2,3)+1) --Output should be "2,3,4"
 ### time
 `time()` This function will return the number of seconds since the Unix Epoch
 ### getenv
-`log(Trace)` This function will return an environment object of the stack `Trace` stacks up
+`getenv(Trace)` This function will return an environment object of the stack `Trace` stacks up
 ### async
 `async(Call,...Arguments)` This function will call the given function in a new thread with the provided arguments
 ### tostring
